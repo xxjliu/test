@@ -873,3 +873,18 @@ void LedShow(void)
   }
   
 }
+void Write_word(uint8_t add,uint32_t word)//19088743
+{
+  /**/
+  if(add >=  124)
+  {
+    return;
+  }
+  FLASH_Unlock(FLASH_MEMTYPE_DATA);  
+  FLASH_ProgramByte(ADDR_BASE + add, (uint8_t)word); 
+  FLASH_ProgramByte(ADDR_BASE + add + 1, (uint8_t)(word >>8)); 
+  FLASH_ProgramByte(ADDR_BASE + add + 2, (uint8_t)(word >>16)); 
+  FLASH_ProgramByte(ADDR_BASE + add + 3, (uint8_t)(word >>24)); 
+  FLASH_Lock(FLASH_MEMTYPE_DATA);
+}
+void Read_word(uint8_t add,uint32_t* word);

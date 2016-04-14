@@ -1,6 +1,6 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  14:14:12 #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  15:30:05 #
 # Copyright 2010-2012 IAR Systems AB.                                         #
 #                                                                             #
 #    Source file  =  D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c           #
@@ -53,108 +53,101 @@ D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c
      21            LED2_OFF(); 
      22            LED_3ON_4OFF() ; 
      23            //DisCur_Bias_Val = ADConverse(5);     //µç³Ø°üµçÑ¹¼ì²â  if(Current_float_Tmp_Last_Len <32) 
-     24          //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
-     25          //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
-     26          //uint8_t FLASH_ReadByte(uint32_t Address);
-     27          //void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
+     24            //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
+     25            //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
+     26            //uint8_t FLASH_ReadByte(uint32_t Address);
+     27            //void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
      28            
      29            FLASH_Unlock(FLASH_MEMTYPE_DATA);
-     30            FLASH_ProgramByte(ADDR_BASE, 0xAA);
-     31            FLASH_Lock(FLASH_MEMTYPE_DATA);
-     32            while(1)
-     33            {
-     34              ClrWdt(); 
-     35              for(i =0;i<3000;i++)
-     36              {
-     37                ClrWdt();
-     38                nop();nop();nop();nop();
-     39              } 
-     40            FLASH_Unlock(FLASH_MEMTYPE_DATA);
-     41              FLASH_ProgramByte(ADDR_BASE, 0xAA);
-     42            FLASH_Lock(FLASH_MEMTYPE_DATA);
-     43              if(0xAA == FLASH_ReadByte(ADDR_BASE))
-     44              {
-     45                LED1_ON();
-     46              }
-     47              else
-     48              {
-     49                LED1_ON();
-     50              }
-     51              for(i =0;i<3000;i++)
-     52              {
-     53                ClrWdt();
-     54                nop();nop();nop();nop();
-     55              } 
-     56            FLASH_Unlock(FLASH_MEMTYPE_DATA);
-     57              FLASH_ProgramByte(ADDR_BASE, 0x00);
-     58            FLASH_Lock(FLASH_MEMTYPE_DATA);
-     59              if(0xAA == FLASH_ReadByte(ADDR_BASE))
-     60              {
-     61                LED1_ON();
-     62              }
-     63              else
-     64              {
-     65                LED1_ON();
-     66              }
-     67              
-     68            }
-     69            while(1)
-     70            {
-     71              ClrWdt();
-     72              //LED1_XOR();  
-     73              ModeCheck();   
-     74                  //WorkMode = DISCHARGE_MODE;    
-     75              StatusClear();
-     76              CurrentCheck();    
-     77              TempCheck(); 
-     78              BatVolCheck();
-     79              FET_ChgDis_Cntrl(); 
-     80              WorkLedShow();//LedShow();  //
-     81            }
-     82            while(1)
-     83            {
-     84              nop();
-     85              nop();
-     86              nop();
-     87              if(LedShow_Flash_t < 100)
-     88              {
-     89                LED1_ON(); 
-     90                LED2_OFF(); 
-     91                LED_3OFF_4OFF(); 
-     92              }
-     93              else if(LedShow_Flash_t < 200)
-     94              {
-     95                LED1_OFF(); 
-     96                LED2_ON(); 
-     97                LED_3OFF_4OFF(); 
-     98              }
-     99              else if(LedShow_Flash_t < 300)
-    100              {
-    101                LED1_OFF(); 
-    102                LED2_OFF(); 
-    103                LED_3ON_4OFF(); 
-    104              }
-    105              else if(LedShow_Flash_t < 400)
-    106              {
+     30            for(i =0;i<64;i++)
+     31            {
+     32              FLASH_ProgramByte( i, 0x55);
+     33            }
+     34            Write_word( 4,0x76543210);//
+     35            FLASH_Lock(FLASH_MEMTYPE_DATA);
+     36            while(1)
+     37            {
+     38              ClrWdt(); 
+     39              j += 1;
+     40              for(i =0;i<3000;i++)
+     41              {
+     42                ClrWdt();
+     43                nop();nop();nop();nop();
+     44              }  
+     45              if(0xAA == FLASH_ReadByte(ADDR_BASE))
+     46              {
+     47                LED1_OFF();
+     48              }
+     49              else
+     50              {
+     51                LED1_ON();
+     52              }
+     53              for(i =0;i<3000;i++)
+     54              {
+     55                ClrWdt();
+     56                nop();nop();nop();nop();
+     57              } 
+     58              //FLASH_Unlock(FLASH_MEMTYPE_DATA);
+     59              //FLASH_ProgramByte(ADDR_BASE, 0x00);
+     60              //FLASH_Lock(FLASH_MEMTYPE_DATA); 
+     61            }
+     62            while(1)
+     63            {
+     64              ClrWdt();
+     65              //LED1_XOR();  
+     66              ModeCheck();   
+     67                  //WorkMode = DISCHARGE_MODE;    
+     68              StatusClear();
+     69              CurrentCheck();    
+     70              TempCheck(); 
+     71              BatVolCheck();
+     72              FET_ChgDis_Cntrl(); 
+     73              WorkLedShow();//LedShow();  //
+     74            }
+     75            while(1)
+     76            {
+     77              nop();
+     78              nop();
+     79              nop();
+     80              if(LedShow_Flash_t < 100)
+     81              {
+     82                LED1_ON(); 
+     83                LED2_OFF(); 
+     84                LED_3OFF_4OFF(); 
+     85              }
+     86              else if(LedShow_Flash_t < 200)
+     87              {
+     88                LED1_OFF(); 
+     89                LED2_ON(); 
+     90                LED_3OFF_4OFF(); 
+     91              }
+     92              else if(LedShow_Flash_t < 300)
+     93              {
+     94                LED1_OFF(); 
+     95                LED2_OFF(); 
+     96                LED_3ON_4OFF(); 
+     97              }
+     98              else if(LedShow_Flash_t < 400)
+     99              {
+    100                LED1_OFF(); 
+    101                LED2_OFF(); 
+    102                LED_3OFF_4ON(); 
+    103              }
+    104              else if(LedShow_Flash_t < 500)
+    105              { 
+    106                LED2_OFF(); 
     107                LED1_OFF(); 
-    108                LED2_OFF(); 
-    109                LED_3OFF_4ON(); 
-    110              }
-    111              else if(LedShow_Flash_t < 500)
-    112              { 
-    113                LED2_OFF(); 
-    114                LED1_OFF(); 
-    115                LED_3OFF_4OFF();
-    116              } 
-    117              else
-    118              {
-    119                LedShow_Flash_t = 0; 
-    120              } 
-    121                
-    122              
-    123            } 
-    124            return 0;
-    125          }
+    108                LED_3OFF_4OFF();
+    109              } 
+    110              else
+    111              {
+    112                LedShow_Flash_t = 0; 
+    113              } 
+    114                
+    115              
+    116            } 
+    117            return 0;
+    118          }
 
    Section sizes:
 
@@ -164,14 +157,14 @@ D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c
      _A_PB_ODR         1
      _A_PC_ODR         1
      _A_PD_ODR         1
-     main            220
+     main            199
 
  
    4 bytes in section .near.noinit
- 220 bytes in section .near_func.text
+ 199 bytes in section .near_func.text
  
- 220 bytes of CODE memory
+ 199 bytes of CODE memory
    0 bytes of DATA memory (+ 4 bytes shared)
 
 Errors: none
-Warnings: 4
+Warnings: 3

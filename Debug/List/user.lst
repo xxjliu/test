@@ -1,35 +1,35 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM831/Mar/2016  15:50:23 #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  15:30:05 #
 # Copyright 2010-2012 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c           #
-#    Command line =  D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c -e -Om    #
+#    Source file  =  D:\ProjectPath\STMPath\AC100_A0\sys\src\user.c           #
+#    Command line =  D:\ProjectPath\STMPath\AC100_A0\sys\src\user.c -e -Om    #
 #                    --no_unroll --no_inline --no_tbaa --no_cross_call        #
 #                    --debug --code_model small --data_model medium -o        #
-#                    D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\               #
+#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\               #
 #                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
 #                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
-#                    D:\ProjectPath\STMPath\AC100_a0\Debug\List\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_a0/user/\ -I                #
-#                    D:\ProjectPath\STMPath\AC100_a0/user/src/\ -I            #
-#                    D:\ProjectPath\STMPath\AC100_a0/user/inc/\ -I            #
-#                    D:\ProjectPath\STMPath\AC100_a0/addon/\ -I               #
-#                    D:\ProjectPath\STMPath\AC100_a0/addon/src/\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_a0/addon/inc/\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_a0/sys/\ -I                 #
-#                    D:\ProjectPath\STMPath\AC100_a0/sys/inc/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_a0/sys/src/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_a0/lib/\ -I                 #
-#                    D:\ProjectPath\STMPath\AC100_a0/lib/src/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_a0/lib/inc/\ --vregs 16     #
-#    List file    =  D:\ProjectPath\STMPath\AC100_a0\Debug\List\user.lst      #
-#    Object file  =  D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\user.o         #
+#                    D:\ProjectPath\STMPath\AC100_A0\Debug\List\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/\ -I                #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/src/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/inc/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/\ -I               #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/src/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/inc/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/inc/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/inc/\ --vregs 16     #
+#    List file    =  D:\ProjectPath\STMPath\AC100_A0\Debug\List\user.lst      #
+#    Object file  =  D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\user.o         #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c
+D:\ProjectPath\STMPath\AC100_A0\sys\src\user.c
       1          #include "user.h"
       2          #include "macro_def.h"
       3          #include "iostm8s003f3.h"
@@ -905,6 +905,21 @@ D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c
     873            }
     874            
     875          }
+    876          void Write_word(uint8_t add,uint32_t word)//19088743
+    877          {
+    878            /**/
+    879            if(add >=  124)
+    880            {
+    881              return;
+    882            }
+    883            FLASH_Unlock(FLASH_MEMTYPE_DATA);  
+    884            FLASH_ProgramByte(ADDR_BASE + add, (uint8_t)word); 
+    885            FLASH_ProgramByte(ADDR_BASE + add + 1, (uint8_t)(word >>8)); 
+    886            FLASH_ProgramByte(ADDR_BASE + add + 2, (uint8_t)(word >>16)); 
+    887            FLASH_ProgramByte(ADDR_BASE + add + 3, (uint8_t)(word >>24)); 
+    888            FLASH_Lock(FLASH_MEMTYPE_DATA);
+    889          }
+    890          void Read_word(uint8_t add,uint32_t* word);
 
    Section sizes:
 
@@ -994,13 +1009,14 @@ D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c
      WorkLedShow              171
      LedShow                  215
      ledshow_cnt                1
+     Write_word               102
 
  
      7 bytes in section .near.bss
     55 bytes in section .near.noinit
- 2 363 bytes in section .near_func.text
+ 2 465 bytes in section .near_func.text
  
- 2 363 bytes of CODE memory
+ 2 465 bytes of CODE memory
      7 bytes of DATA memory (+ 55 bytes shared)
 
 Errors: none

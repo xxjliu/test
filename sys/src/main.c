@@ -21,28 +21,30 @@ int main( void )
   LED2_OFF(); 
   LED_3ON_4OFF() ; 
   //DisCur_Bias_Val = ADConverse(5);     //µç³Ø°üµçÑ¹¼ì²â  if(Current_float_Tmp_Last_Len <32) 
-//=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
-//void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
-//uint8_t FLASH_ReadByte(uint32_t Address);
-//void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
+  //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
+  //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
+  //uint8_t FLASH_ReadByte(uint32_t Address);
+  //void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
   
   FLASH_Unlock(FLASH_MEMTYPE_DATA);
-  FLASH_ProgramByte(ADDR_BASE, 0xAA);
+  for(i =0;i<64;i++)
+  {
+    FLASH_ProgramByte( i, 0x55);
+  }
+  Write_word( 4,0x76543210);//
   FLASH_Lock(FLASH_MEMTYPE_DATA);
   while(1)
   {
     ClrWdt(); 
+    j += 1;
     for(i =0;i<3000;i++)
     {
       ClrWdt();
       nop();nop();nop();nop();
-    } 
-  FLASH_Unlock(FLASH_MEMTYPE_DATA);
-    FLASH_ProgramByte(ADDR_BASE, 0xAA);
-  FLASH_Lock(FLASH_MEMTYPE_DATA);
+    }  
     if(0xAA == FLASH_ReadByte(ADDR_BASE))
     {
-      LED1_ON();
+      LED1_OFF();
     }
     else
     {
@@ -53,18 +55,9 @@ int main( void )
       ClrWdt();
       nop();nop();nop();nop();
     } 
-  FLASH_Unlock(FLASH_MEMTYPE_DATA);
-    FLASH_ProgramByte(ADDR_BASE, 0x00);
-  FLASH_Lock(FLASH_MEMTYPE_DATA);
-    if(0xAA == FLASH_ReadByte(ADDR_BASE))
-    {
-      LED1_ON();
-    }
-    else
-    {
-      LED1_ON();
-    }
-    
+    //FLASH_Unlock(FLASH_MEMTYPE_DATA);
+    //FLASH_ProgramByte(ADDR_BASE, 0x00);
+    //FLASH_Lock(FLASH_MEMTYPE_DATA); 
   }
   while(1)
   {

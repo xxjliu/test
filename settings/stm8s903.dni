@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=-1997621262
+Checksum=756897502
 [DisAssemblyWindow]
 NumStates=_ 1
 State 1=_ 1
@@ -69,9 +69,6 @@ Fmt1=unsigned char[32]	3	0
 Fmt2=unsigned char[50]	3	0
 [watch_formats]
 Fmt0={W}0:arr	3	2
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [Breakpoints]
 Bp0=_ "STD_CODE" "{$PROJ_DIR$}.154.4@1" 0 0 0 0 "" 0 ""
 Bp1=_ "STD_CODE" "{$PROJ_DIR$}.130.1@1" 0 0 0 0 "" 0 ""
@@ -85,13 +82,16 @@ Bp8=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
 Bp9=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
 Bp10=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
 Bp11=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
-Bp12=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.43.5" 1 0 0 0 "" 0 ""
-Bp13=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.59.5" 1 0 0 0 "" 0 ""
+Bp12=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.15.3" 1 0 0 0 "" 0 ""
+Bp13=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.38.5" 1 0 0 0 "" 0 ""
 Count=14
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 A0=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_iwdg.c" ""
 A1=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_tim1.c" ""

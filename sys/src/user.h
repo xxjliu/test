@@ -86,12 +86,15 @@ void VarClear(void);
 
 //===========================================================
 #define ADDR_BASE       0x004000
-#define SOC_ADDR          0x004004 
+#define SOC_ADDR        0x004004 
 //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
 //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
 //uint8_t FLASH_ReadByte(uint32_t Address);
 //void FLASH_ProgramWord(uint32_t Address, uint32_t Data);
 void SOC_Init(void);
+void SOC_SavedtoEEPROM(void);
+void Write_word(uint8_t add,uint32_t word);
+void Read_word(uint8_t add,uint32_t* word); 
 void SOC_SavedtoEEPROM(void);
 
 
