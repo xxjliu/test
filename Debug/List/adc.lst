@@ -1,0 +1,216 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:32 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\adc.c             #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\adc.c" -e -Ohz   #
+#                    --debug --code_model small --data_model medium -o        #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\adc.lst          #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\adc.o             #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\adc.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			adc.c
+      6          * Description:		adc c file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          
+     18          #include "type.h"	
+     19          #include "utility.h"	
+     20          //include public header files
+     21          
+     22          #include "stm8s_adc1.h"         //for stm8s105
+     23          
+     24          #include "adc.h"
+     25          
+     26          #include "debug.h"
+     27          #include "iostm8s903k3.h"
+     28          
+     29          //*********************************************************************
+     30          //* 	函数名称: AdcInit
+     31          //* 	功能描述: ADC初始化
+     32          //* 	函数说明: ADC初始化
+     33          //* 	调用函数: 无
+     34          //* 	全局变量: 无
+     35          //* 	输入条件: 无
+     36          //*		输出条件: 无
+     37          //* 	返 回 值: 无
+     38          //***********************************************************************
+     39          //AdcInit
+     40          extern void
+     41          	AdcInit(void)
+     42          {
+     43          //set adc i/o in 
+     44              //ADC0_IN();
+     45              //ADC1_IN();   
+     46              //ADC2_IN();    
+     47              //ADC3_IN();
+     48              //ADC4_IN();   
+     49              //ADC5_IN();
+     50              //ADC6_IN();   
+     51          //set adc1 init
+     52             // ADC1_DeInit();        
+     53          //ADC1_Init(ADC1_ConvMode_TypeDef ADC1_ConversionMode, ADC1_Channel_TypeDef ADC1_Channel, ADC1_PresSel_TypeDef ADC1_PrescalerSelection, ADC1_ExtTrig_TypeDef ADC1_ExtTrigger, FunctionalState ADC1_ExtTriggerState, ADC1_Align_TypeDef ADC1_Align, ADC1_SchmittTrigg_TypeDef ADC1_SchmittTriggerChannel, FunctionalState ADC1_SchmittTriggerState)
+     54                 
+     55             // ADC1_Init(ADC1_CONVERSIONMODE_SINGLE, ADC1_CHANNEL_0, ADC1_PRESSEL_FCPU_D8, (ADC1_EXTTRIG_GPIO/* | ADC1_EXTTRIG_TIM*/), DISABLE, ADC1_ALIGN_RIGHT, ADC1_SCHMITTTRIG_CHANNEL3, DISABLE);
+     56          
+     57            ADC_CSR=0;
+     58            ADC_CR1=0x31;
+     59            ADC_CR2=0x08;
+     60            ADC_CR3=0;
+     61            ADC_TDRH=0xFF;
+     62            ADC_TDRL=0xFF;
+     63           // ADC_TDRL=0x7f;
+     64            //ADC_TDRH=0x00;
+     65            ADC_AWCRH=0;
+     66          }
+     67          
+     68          
+     69          
+     70          //*********************************************************************
+     71          //* 	函数名称: AdcReadOneChannel
+     72          //* 	功能描述: AdcReadOneChannel
+     73          //* 	函数说明: 进行AdcReadOneChannel之前必有一次AdcInit
+     74          //* 	调用函数: 无
+     75          //* 	全局变量: 无
+     76          //* 	输入条件: 无
+     77          //*	    输出条件: 无
+     78          //* 	返 回 值: 无
+     79          //***********************************************************************
+     80          //AdcReadOneChannel
+     81          /*extern WORD AdcReadOneChannel(BYTE channel)
+     82          {
+     83              WORD	value;
+     84              switch(channel)
+     85              {
+     86              case    0:
+     87                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_0,ADC1_ALIGN_RIGHT);
+     88                break;
+     89              case    1:
+     90                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_1,ADC1_ALIGN_RIGHT);
+     91                break;    
+     92               case    2:
+     93                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_2,ADC1_ALIGN_RIGHT);
+     94                break;     
+     95              case    3:
+     96                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_3,ADC1_ALIGN_RIGHT);
+     97                break;      
+     98              case    4:
+     99                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_4,ADC1_ALIGN_RIGHT);
+    100                break;
+    101              case    5:
+    102                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_5,ADC1_ALIGN_RIGHT);
+    103                break;    
+    104               case    6:
+    105                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_6,ADC1_ALIGN_RIGHT);
+    106                break;     
+    107              case    7:
+    108                  ADC1_ConversionConfig(ADC1_CONVERSIONMODE_SINGLE,ADC1_CHANNEL_7,ADC1_ALIGN_RIGHT);
+    109                break;       
+    110              }     
+    111          	ADC1_Cmd(ENABLE);
+    112          	WaitUs(5);
+    113          //enable adc moudle
+    114          	ADC1_StartConversion();
+    115                  
+    116          	while(!(ADC1_GetFlagStatus(ADC1_FLAG_EOC) ))
+    117                  {
+    118                  continue;
+    119                  }
+    120              ADC1_ClearFlag(ADC1_FLAG_EOC);  
+    121          //read adc result	
+    122              value = ADC1_GetConversionValue();
+    123             // ADC1_Cmd(DISABLE);
+    124              return(value);
+    125          }
+    126          
+    127          
+    128          
+    129          //Get Adc Key Index
+    130          extern WORD
+    131          	GetOneChanelAdcValue(
+    132                               BYTE channel
+    133          		)
+    134          {
+    135              WORD  res,min,max,tmp;
+    136              BYTE  i;
+    137              min = 1023;
+    138              max = 0;
+    139              res = 0;
+    140              for(i = 0; i< 10; i ++)
+    141                {
+    142                tmp = AdcReadOneChannel(channel);  
+    143                if(tmp < min)
+    144                  {
+    145                  min = tmp;  
+    146                  }
+    147                if(tmp > max)
+    148                  {
+    149                  max = tmp;  
+    150                  } 
+    151                res += tmp;
+    152                
+    153                }
+    154              res -= min;
+    155              res -= max;
+    156              tmp = res/8;
+    157              //DBG(("AdcValue:%d\n", tmp)); 
+    158              return(tmp);
+    159                    
+    160          }
+    161          */
+    162           //extern  
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     _A_ADC_CSR        1
+     _A_ADC_CR1        1
+     _A_ADC_CR2        1
+     _A_ADC_CR3        1
+     ADC_TDRH          1
+     ADC_TDRL          1
+     _A_ADC_AWCRH      1
+     AdcInit          29
+
+ 
+  7 bytes in section .near.noinit
+ 29 bytes in section .near_func.text
+ 
+ 29 bytes of CODE memory
+  0 bytes of DATA memory (+ 7 bytes shared)
+
+Errors: none
+Warnings: none

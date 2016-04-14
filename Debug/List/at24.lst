@@ -1,0 +1,178 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:32 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\at24.c            #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\at24.c" -e -Ohz  #
+#                    --debug --code_model small --data_model medium -o        #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\at24.lst         #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\at24.o            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\at24.c
+      1          /*
+      2          *****************************************************************************
+      3          *					PACE ELECTRONICS CO.,LTD
+      4          *	Copyright 2010, PACE ELECTRONICS CO.,LTD  Shenzhen, China
+      5          *					All rights reserved.
+      6          *
+      7          * Filename:		at24.c
+      8          * Description:		at24 c file
+      9          *
+     10          *
+     11          * Change History:
+     12          *			Goldjun	- 04/02'2010 - Ver 0.1
+     13          *					- created
+     14          *			xxxxx	- xx/xx/2009 - Ver xx
+     15          *					- change code
+     16          ******************************************************************************
+     17          */
+     18          
+     19          #include "type.h"	
+     20          #include "at24.h"	
+     21          #include "stm8s.h"
+     22          #include "stm8s_flash.h"
+     23          
+     24          
+     25          
+     26          
+     27          extern void AT24Init(void)
+     28          {    
+     29              FLASH_DeInit();
+     30              FLASH_Unlock(FLASH_MEMTYPE_DATA);
+     31              FLASH_SetProgrammingTime(FLASH_PROGRAMTIME_STANDARD);
+     32          }
+     33          
+     34          //*********************************************************************
+     35          //*	函数名称: AT24WriteByte
+     36          //*	功能描述: 写1个Byte数据到AT24固定地址
+     37          //*	函数说明: 单独写入一个字节数据
+     38          //*	调用函数: IIC模块
+     39          //* 	全局变量: 无
+     40          //*	输入条件: data（数据）,adrdata（地址）
+     41          //*	输出条件: 无
+     42          //*	返   回  值: 无
+     43          //*
+     44          //***********************************************************************
+     45          //
+     46          extern void AT24WriteByte(BYTE adrdata,BYTE m)
+     47          {
+     48              disableInterrupts(); 
+     49              FLASH_ProgramByte( (0x4000+adrdata) , m ); //写入一个字节m
+     50              enableInterrupts();
+     51              WaitMs(6);
+     52          
+     53          }
+     54          
+     55          
+     56          
+     57          //*********************************************************************
+     58          //* 	函数名称: AT24ReadByte
+     59          //* 	功能描述: 从AT24固定地址中读取一个BYTE数据
+     60          //* 	函数说明: 单独读取一个数据
+     61          //* 	调用函数: IIC模块
+     62          //* 	全局变量: 无
+     63          //* 	输入条件: adrdata（数据地址）
+     64          //*	输出条件: 无
+     65          //* 	返	 回   值: 读到的数据
+     66          //
+     67          //***********************************************************************
+     68          //
+     69          extern BYTE AT24ReadByte(BYTE	adrdata)
+     70          {
+     71            BYTE out_data = 0;
+     72            out_data = FLASH_ReadByte((0x4000+adrdata)); //读入一个字节out_data  
+     73            return(out_data);
+     74          }
+     75          
+     76          
+     77          
+     78          //*********************************************************************
+     79          //* 	函数名称: AT24WriteWord
+     80          //* 	功能描述: 写1个WORD(2个BYTE)数据到AT24固定地址
+     81          //* 	函数说明: 单独写入一个数据
+     82          //* 	调用函数: IIC模块
+     83          //* 	全局变量: 无
+     84          //* 	输入条件: data（数据）,adrdata（地址）
+     85          //*	输出条件: 无
+     86          //* 	返  回   值 : 无
+     87          //***********************************************************************
+     88          //
+     89          extern void AT24WriteWord(BYTE	adrdata,WORD	n)
+     90          {  disableInterrupts(); 
+     91              FLASH_ProgramByte( (0x4000+adrdata) , (n&0xff) ); 
+     92             enableInterrupts();
+     93              WaitMs(6);
+     94              disableInterrupts(); 
+     95              FLASH_ProgramByte( (0x4000+adrdata+1) , ((n>>8)&0xff) ); 
+     96              enableInterrupts();
+     97              WaitMs(6);
+     98          }
+     99          
+    100          
+    101          
+    102          //*********************************************************************
+    103          //* 	函数名称: AT24ReadWord
+    104          //* 	功能描述: 从AT24固定地址中读取一个WORD(2个BYTE)数据
+    105          //* 	函数说明: 单独读取一个数据
+    106          //* 	调用函数: IIC模块
+    107          //* 	全局变量: 无
+    108          //* 	输入条件: unsigned char adr_data（数据地址）
+    109          //*	输出条件: 无
+    110          //* 	返  回   值: 读到的数据
+    111          //*
+    112          //***********************************************************************
+    113          //
+    114          extern WORD  AT24ReadWord(BYTE adrdata)
+    115          {
+    116          
+    117          	unsigned char k;
+    118          	unsigned int out_data;
+    119          	//WaitMs(5);
+    120                  // disableInterrupts();
+    121                  k = FLASH_ReadByte((0x4000+adrdata));
+    122                  out_data = FLASH_ReadByte((0x4000+adrdata+1));
+    123          	out_data = ( k+ (out_data<<8) );
+    124          	return(out_data);
+    125          }
+    126          
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     AT24Init         12
+     ?Subroutine1      6
+     AT24WriteByte    19
+     ?Subroutine2     13
+     AT24ReadByte      8
+     AT24WriteWord    35
+     ?Subroutine0      9
+     AT24ReadWord     51
+
+ 
+ 153 bytes in section .near_func.text
+ 
+ 153 bytes of CODE memory
+
+Errors: none
+Warnings: none

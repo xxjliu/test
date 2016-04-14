@@ -1,0 +1,98 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:34 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\debug.c           #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\debug.c" -e      #
+#                    -Ohz --debug --code_model small --data_model medium -o   #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\debug.lst        #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\debug.o           #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\debug.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			debug.c
+      6          * Description:		debug c file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          
+     18          #include "type.h"
+     19          #include "utility.h"
+     20          //include public header files
+     21          
+     22          
+     23          #include "stm8s_uart1.h"         //for stm8s207
+     24          
+     25          #include 	<stdio.h>
+     26          #include "debug.h"
+     27          #include "uart.h"
+     28          
+     29          #ifdef FUNC_UARTDBG_EN
+     30          
+     31          #define UART1DBG_EN
+     32          
+     33          
+     34          
+     35          // Put a char from UART.
+     36          int putchar (int c)
+     37          {
+     38          
+     39          #ifdef	UART1DBG_EN     
+     40             if (c == '\n')
+     41              {
+     42                  /* put '\r' to hardware here */
+     43                  /* Wait transmission is completed : otherwise the first data is not sent */
+     44                  while (!UART1_GetFlagStatus(UART1_FLAG_TC));
+     45                  UART1_SendData8('\r');
+     46                  /* Wait transmission is completed */
+     47                  while (!UART1_GetFlagStatus(UART1_FLAG_TC));
+     48              }
+     49              /* put c to hardware here */
+     50              /* Wait transmission is completed : otherwise the first data is not sent */
+     51              while (!UART1_GetFlagStatus(UART1_FLAG_TC));
+     52              UART1_SendData8(c);
+     53              /* Wait transmission is completed */
+     54              while (!UART1_GetFlagStatus(UART1_FLAG_TC));
+     55              return (c);       
+     56          #endif
+     57              
+     58          }
+     59          
+     60          #endif
+
+ 
+ 
+ 0 bytes of memory
+
+Errors: none
+Warnings: none

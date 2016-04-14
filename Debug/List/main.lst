@@ -1,0 +1,177 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  14:14:12 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c           #
+#    Command line =  D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c -e -Om    #
+#                    --no_unroll --no_inline --no_tbaa --no_cross_call        #
+#                    --debug --code_model small --data_model medium -o        #
+#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\               #
+#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
+#                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
+#                    D:\ProjectPath\STMPath\AC100_A0\Debug\List\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/\ -I                #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/src/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_A0/user/inc/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/\ -I               #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/src/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/addon/inc/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/inc/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/sys/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_A0/lib/inc/\ --vregs 16     #
+#    List file    =  D:\ProjectPath\STMPath\AC100_A0\Debug\List\main.lst      #
+#    Object file  =  D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\main.o         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c
+      1          
+      2          #include "stm8s.h"  
+      3          #include "user.h"  
+      4          int main( void )
+      5          { 
+      6            uint16_t j,i = 0;
+      7            disableInterrupts();
+      8            SysInit();
+      9            PortInit();
+     10            ADC_Init();
+     11            Timer2Init();       // 10ms
+     12            PWM2_Init();
+     13            enableInterrupts();
+     14            VREF_ON();  
+     15            VarClear();
+     16            Pre_Dis_ON();
+     17            MCU_CO_OFF();
+     18            MCU_DO_OFF();
+     19            WorkMode = IDLE_MODE; 
+     20            LED1_OFF();
+     21            LED2_OFF(); 
+     22            LED_3ON_4OFF() ; 
+     23            //DisCur_Bias_Val = ADConverse(5);     //µç³Ø°üµçÑ¹¼ì²â  if(Current_float_Tmp_Last_Len <32) 
+     24          //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
+     25          //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
+     26          //uint8_t FLASH_ReadByte(uint32_t Address);
+     27          //void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
+     28            
+     29            FLASH_Unlock(FLASH_MEMTYPE_DATA);
+     30            FLASH_ProgramByte(ADDR_BASE, 0xAA);
+     31            FLASH_Lock(FLASH_MEMTYPE_DATA);
+     32            while(1)
+     33            {
+     34              ClrWdt(); 
+     35              for(i =0;i<3000;i++)
+     36              {
+     37                ClrWdt();
+     38                nop();nop();nop();nop();
+     39              } 
+     40            FLASH_Unlock(FLASH_MEMTYPE_DATA);
+     41              FLASH_ProgramByte(ADDR_BASE, 0xAA);
+     42            FLASH_Lock(FLASH_MEMTYPE_DATA);
+     43              if(0xAA == FLASH_ReadByte(ADDR_BASE))
+     44              {
+     45                LED1_ON();
+     46              }
+     47              else
+     48              {
+     49                LED1_ON();
+     50              }
+     51              for(i =0;i<3000;i++)
+     52              {
+     53                ClrWdt();
+     54                nop();nop();nop();nop();
+     55              } 
+     56            FLASH_Unlock(FLASH_MEMTYPE_DATA);
+     57              FLASH_ProgramByte(ADDR_BASE, 0x00);
+     58            FLASH_Lock(FLASH_MEMTYPE_DATA);
+     59              if(0xAA == FLASH_ReadByte(ADDR_BASE))
+     60              {
+     61                LED1_ON();
+     62              }
+     63              else
+     64              {
+     65                LED1_ON();
+     66              }
+     67              
+     68            }
+     69            while(1)
+     70            {
+     71              ClrWdt();
+     72              //LED1_XOR();  
+     73              ModeCheck();   
+     74                  //WorkMode = DISCHARGE_MODE;    
+     75              StatusClear();
+     76              CurrentCheck();    
+     77              TempCheck(); 
+     78              BatVolCheck();
+     79              FET_ChgDis_Cntrl(); 
+     80              WorkLedShow();//LedShow();  //
+     81            }
+     82            while(1)
+     83            {
+     84              nop();
+     85              nop();
+     86              nop();
+     87              if(LedShow_Flash_t < 100)
+     88              {
+     89                LED1_ON(); 
+     90                LED2_OFF(); 
+     91                LED_3OFF_4OFF(); 
+     92              }
+     93              else if(LedShow_Flash_t < 200)
+     94              {
+     95                LED1_OFF(); 
+     96                LED2_ON(); 
+     97                LED_3OFF_4OFF(); 
+     98              }
+     99              else if(LedShow_Flash_t < 300)
+    100              {
+    101                LED1_OFF(); 
+    102                LED2_OFF(); 
+    103                LED_3ON_4OFF(); 
+    104              }
+    105              else if(LedShow_Flash_t < 400)
+    106              {
+    107                LED1_OFF(); 
+    108                LED2_OFF(); 
+    109                LED_3OFF_4ON(); 
+    110              }
+    111              else if(LedShow_Flash_t < 500)
+    112              { 
+    113                LED2_OFF(); 
+    114                LED1_OFF(); 
+    115                LED_3OFF_4OFF();
+    116              } 
+    117              else
+    118              {
+    119                LedShow_Flash_t = 0; 
+    120              } 
+    121                
+    122              
+    123            } 
+    124            return 0;
+    125          }
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     _A_PA_ODR         1
+     _A_PB_ODR         1
+     _A_PC_ODR         1
+     _A_PD_ODR         1
+     main            220
+
+ 
+   4 bytes in section .near.noinit
+ 220 bytes in section .near_func.text
+ 
+ 220 bytes of CODE memory
+   0 bytes of DATA memory (+ 4 bytes shared)
+
+Errors: none
+Warnings: 4

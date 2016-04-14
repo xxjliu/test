@@ -1,0 +1,425 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM820/Feb/2016  15:24:07 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\ProjectPath\STMPath\ch79H\sys\src\i2c_master_poll.c   #
+#    Command line =  D:\ProjectPath\STMPath\ch79H\sys\src\i2c_master_poll.c   #
+#                    -e -Ohz --debug --code_model small --data_model medium   #
+#                    -o D:\ProjectPath\STMPath\ch79H\Debug\Obj\               #
+#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
+#                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
+#                    D:\ProjectPath\STMPath\ch79H\Debug\List\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/user/\ -I                   #
+#                    D:\ProjectPath\STMPath\ch79H/user/src/\ -I               #
+#                    D:\ProjectPath\STMPath\ch79H/user/inc/\ -I               #
+#                    D:\ProjectPath\STMPath\ch79H/addon/\ -I                  #
+#                    D:\ProjectPath\STMPath\ch79H/addon/src/\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/addon/inc/\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/sys/\ -I                    #
+#                    D:\ProjectPath\STMPath\ch79H/sys/inc/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/sys/src/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/lib/\ -I                    #
+#                    D:\ProjectPath\STMPath\ch79H/lib/src/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/lib/inc/\ --vregs 16        #
+#    List file    =  D:\ProjectPath\STMPath\ch79H\Debug\List\i2c_master_poll. #
+#                    lst                                                      #
+#    Object file  =  D:\ProjectPath\STMPath\ch79H\Debug\Obj\i2c_master_poll.o #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\ProjectPath\STMPath\ch79H\sys\src\i2c_master_poll.c
+      1          /**
+      2           ******************************************************************************
+      3           * @file    i2c_master_poll.c
+      4           * @author  MCD Application Team
+      5           * @version V0.0.3
+      6           * @date    Oct 2010
+      7           * @brief   This file contains optimized drivers for I2C master
+      8           ******************************************************************************
+      9           * @copy
+     10           *
+     11           * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+     12           * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+     13           * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+     14           * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+     15           * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+     16           * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+     17           *
+     18           * <h2><center>&copy; COPYRIGHT 2009 STMicroelectronics</center></h2>
+     19           */ 
+     20          
+     21          #include "i2c_master_poll.h"
+     22          
+     23          /******************************************************************************
+     24           * Function name : I2C_Init
+     25           * Description 	: Initialize I2C peripheral
+     26           * Input param 	: None
+     27           * Return 		    : None
+     28           * See also 		  : None
+     29           *******************************************************************************/
+     30          void I2C_Init(void) {
+     31              GPIOE->ODR |= 6;                //define SDA, SCL outputs, HiZ, Open drain, Fast
+     32              GPIOE->DDR |= 6;
+     33              GPIOE->CR2 |= 6;
+     34          
+     35          #ifdef FAST_I2C_MODE
+     36              I2C->FREQR = 16;               // input clock to I2C - 16MHz 
+     37              I2C->CCRL = 15;                // 900/62.5= 15, (SCLhi must be at least 600+300=900ns!)
+     38              I2C->CCRH = 0x80;              // fast mode, duty 2/1 (bus speed 62.5*3*15~356kHz)
+     39              I2C->TRISER = 5;               // 300/62.5 + 1= 5  (maximum 300ns)
+     40          #else
+     41              I2C->FREQR = 8;                // input clock to I2C - 8MHz
+     42              I2C->CCRL = 40;                // CCR= 40 - (SCLhi must be at least 4000+1000=5000ns!)
+     43              I2C->CCRH = 0;                 // standard mode, duty 1/1 bus speed 100kHz
+     44              I2C->TRISER = 9;               // 1000ns/(125ns) + 1  (maximum 1000ns)
+     45          #endif
+     46              I2C->OARL = 0xA0;              // own address A0;
+     47              I2C->OARH |= 0x40;
+     48              I2C->ITR = 1;                  // enable error interrupts
+     49              I2C->CR2 |= 0x04;              // ACK=1, Ack enable
+     50              I2C->CR1 |= 0x01;              // PE=1
+     51          }
+     52          
+     53          
+     54          /******************************************************************************
+     55           * Function name : I2C_RandomRead
+     56           * Description 	: Read defined number bytes from slave memory starting with curret offset
+     57           * Input param 	: number of bytes to read, starting address to store received data
+     58           * Return 		    : None
+     59           * See also 		  : None
+     60           *******************************************************************************/
+     61          void I2C_RandomRead(u8 u8_NumByteToRead, u8 *u8_DataBuffer) 
+     62          {
+     63              /*--------------- BUSY? -> STOP request ---------------------*/
+     64              while(I2C->SR3 & I2C_SR3_BUSY  &&  tout())	  				// Wait while the bus is busy
+     65              {
+     66                  I2C->CR2 |= I2C_CR2_STOP;                   				// STOP=1, generate stop
+     67                  while(I2C->CR2 & I2C_CR2_STOP  &&  tout()); 				// wait until stop is performed
+     68              }
+     69              I2C->CR2 |= I2C_CR2_ACK;                      				// ACK=1, Ack enable
+     70              /*--------------- Start communication -----------------------*/  
+     71              I2C->CR2 |= I2C_CR2_START;                    				// START=1, generate start
+     72              while((I2C->SR1 & I2C_SR1_SB)==0  &&  tout());				// wait for start bit detection (SB)
+     73              /*------------------ Address send ---------------------------*/      
+     74          #ifdef TEN_BITS_ADDRESS
+     75              I2C->DR = (u8)(((SLAVE_ADDRESS >> 7) & 6) | 0xF0);	// Send header of 10-bit device address (R/W = 0)
+     76              while(!(I2C->SR1 & I2C_SR1_ADD10) &&  tout());			// Wait for header ack (ADD10)
+     77              I2C->DR = (u8)(SLAVE_ADDRESS);                			// Send lower 8-bit device address
+     78              while(!(I2C->SR1 & I2C_SR1_ADDR)  &&  tout());			// Wait for address ack (ADDR)
+     79              I2C->CR2 |= I2C_CR2_START;                    			// START=1, generate start
+     80              while((I2C->SR1 & I2C_SR1_SB)==0  &&  tout());			// Wait for start bit detection (SB)
+     81              I2C->DR = (u8)(((SLAVE_ADDRESS >> 7) & 6) | 0xF1);	// Send header of 10-bit device address (R/W = 1)
+     82          #else
+     83              I2C->DR = (u8)(SLAVE_ADDRESS << 1) | 1;       			// Send 7-bit device address & Write (R/W = 1)
+     84          #endif  // TEN_BITS_ADDRESS
+     85              while(!(I2C->SR1 & I2C_SR1_ADDR)  &&  tout());				// Wait for address ack (ADDR)
+     86              /*------------------- Data Receive --------------------------*/
+     87              if (u8_NumByteToRead > 2)                 						// *** more than 2 bytes are received? ***
+     88              {
+     89                  I2C->SR3;                                     			// ADDR clearing sequence    
+     90                  while(u8_NumByteToRead > 3  &&  tout())       			// not last three bytes?
+     91                  {
+     92                      while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 				// Wait for BTF
+     93                      *u8_DataBuffer++ = I2C->DR;                   				// Reading next data byte
+     94                      --u8_NumByteToRead;																		// Decrease Numbyte to reade by 1
+     95                  }
+     96                  //last three bytes should be read
+     97                  while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 			// Wait for BTF
+     98                  I2C->CR2 &=~I2C_CR2_ACK;                      			// Clear ACK
+     99                  disableInterrupts();                          			// Errata workaround (Disable interrupt)
+    100                  *u8_DataBuffer++ = I2C->DR;                     		// Read 1st byte
+    101                  I2C->CR2 |= I2C_CR2_STOP;                       		// Generate stop here (STOP=1)
+    102                  *u8_DataBuffer++ = I2C->DR;                     		// Read 2nd byte
+    103                  enableInterrupts();																	// Errata workaround (Enable interrupt)
+    104                  while(!(I2C->SR1 & I2C_SR1_RXNE)  &&  tout());			// Wait for RXNE
+    105                  *u8_DataBuffer++ = I2C->DR;                   			// Read 3rd Data byte
+    106              }
+    107              else
+    108              {
+    109                  if(u8_NumByteToRead == 2)                						// *** just two bytes are received? ***
+    110                  {
+    111                      I2C->CR2 |= I2C_CR2_POS;                      		// Set POS bit (NACK at next received byte)
+    112                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    113                      I2C->SR3;                                       	// Clear ADDR Flag
+    114                      I2C->CR2 &=~I2C_CR2_ACK;                        	// Clear ACK 
+    115                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    116                      while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 		// Wait for BTF
+    117                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    118                      I2C->CR2 |= I2C_CR2_STOP;                       	// Generate stop here (STOP=1)
+    119                      *u8_DataBuffer++ = I2C->DR;                     	// Read 1st Data byte
+    120                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    121                      *u8_DataBuffer = I2C->DR;													// Read 2nd Data byte
+    122                  }
+    123                  else                                      					// *** only one byte is received ***
+    124                  {
+    125                      I2C->CR2 &=~I2C_CR2_ACK;;                     		// Clear ACK 
+    126                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    127                      I2C->SR3;                                       	// Clear ADDR Flag   
+    128                      I2C->CR2 |= I2C_CR2_STOP;                       	// generate stop here (STOP=1)
+    129                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    130                      while(!(I2C->SR1 & I2C_SR1_RXNE)  &&  tout()); 		// test EV7, wait for RxNE
+    131                      *u8_DataBuffer = I2C->DR;                     		// Read Data byte
+    132                  }
+    133              }
+    134              /*--------------- All Data Received -----------------------*/
+    135              while((I2C->CR2 & I2C_CR2_STOP)  &&  tout());     		// Wait until stop is performed (STOPF = 1)
+    136              I2C->CR2 &=~I2C_CR2_POS;                          		// return POS to default state (POS=0)
+    137          }
+    138          /******************************************************************************
+    139           * Function name : I2C_ReadRegister
+    140           * Description 	: Read defined number bytes from slave memory starting with defined offset
+    141           * Input param 	: offset in slave memory, number of bytes to read, starting address to store received data
+    142           * Return 		    : None
+    143           * See also 		  : None
+    144           *******************************************************************************/
+    145          void I2C_ReadRegister(u8 u8_regAddr, u8 u8_NumByteToRead, u8 *u8_DataBuffer)
+    146          {
+    147              /*--------------- BUSY? -> STOP request ---------------------*/
+    148              while(I2C->SR3 & I2C_SR3_BUSY  &&  tout())	  				// Wait while the bus is busy
+    149              {
+    150                  I2C->CR2 |= I2C_CR2_STOP;                   				// Generate stop here (STOP=1)
+    151                  while(I2C->CR2 & I2C_CR2_STOP  &&  tout()); 				// Wait until stop is performed
+    152              }
+    153              I2C->CR2 |= I2C_CR2_ACK;                      				// ACK=1, Ack enable
+    154              /*--------------- Start communication -----------------------*/  
+    155              I2C->CR2 |= I2C_CR2_START;                    				// START=1, generate start
+    156              while((I2C->SR1 & I2C_SR1_SB)==0  &&  tout());				// Wait for start bit detection (SB)
+    157              /*------------------ Address send ---------------------------*/      
+    158              if(tout())
+    159              {
+    160          #ifdef TEN_BITS_ADDRESS
+    161                  I2C->DR = (u8)(((SLAVE_ADDRESS >> 7) & 6) | 0xF0);// Send header of 10-bit device address (R/W = 0)
+    162                  while(!(I2C->SR1 & I2C_SR1_ADD10) &&  tout());		// Wait for header ack (ADD10)
+    163                  if(tout())
+    164                  {
+    165                      I2C->DR = (u8)(SLAVE_ADDRESS);                	// Send lower 8-bit device address & Write  
+    166                  }
+    167          #else
+    168                  I2C->DR = (u8)(SLAVE_ADDRESS << 1);   						// Send 7-bit device address & Write (R/W = 0)
+    169          #endif // TEN_BITS_ADDRESS
+    170              }
+    171              while(!(I2C->SR1 & I2C_SR1_ADDR) &&  tout()); 				// test EV6 - wait for address ack (ADDR)
+    172              dead_time();                                  				// ADDR clearing sequence
+    173              I2C->SR3;
+    174              /*--------------- Register/Command send ----------------------*/
+    175              while(!(I2C->SR1 & I2C_SR1_TXE) &&  tout());  				// Wait for TxE
+    176              if(tout())
+    177              {  
+    178                  I2C->DR = u8_regAddr;                         			// Send register address
+    179              }                                            					// Wait for TxE & BTF
+    180              while((I2C->SR1 & (I2C_SR1_TXE | I2C_SR1_BTF)) != (I2C_SR1_TXE | I2C_SR1_BTF)  &&  tout()); 
+    181              dead_time();                                  				// clearing sequence
+    182              /*-------------- Stop/Restart communication -------------------*/  
+    183          #ifndef TEN_BITS_ADDRESS
+    184          #ifdef NO_RESTART																		// if 7bit address and NO_RESTART setted
+    185              I2C->CR2 |= I2C_CR2_STOP;                     		// STOP=1, generate stop
+    186              while(I2C->CR2 & I2C_CR2_STOP  &&  tout());   		// wait until stop is performed
+    187          #endif // NO_RESTART
+    188          #endif // TEN_BITS_ADDRESS
+    189              /*--------------- Restart communication ---------------------*/  
+    190              I2C->CR2 |= I2C_CR2_START;                     				// START=1, generate re-start
+    191              while((I2C->SR1 & I2C_SR1_SB)==0  &&  tout()); 				// Wait for start bit detection (SB)
+    192              /*------------------ Address send ---------------------------*/      
+    193              if(tout())
+    194              {
+    195          #ifdef TEN_BITS_ADDRESS
+    196                  I2C->DR = (u8)(((SLAVE_ADDRESS >> 7) & 6) | 0xF1);// send header of 10-bit device address (R/W = 1)
+    197          #ifdef NO_RESTART
+    198                  while(!(I2C->SR1 & I2C_SR1_ADD10) &&  tout());	// Wait for header ack (ADD10)
+    199                  if(tout())
+    200                  {
+    201                      I2C->DR = (u8)(SLAVE_ADDRESS);                // Send lower 8-bit device address & Write  
+    202                  }
+    203          #endif // NO_RESTART
+    204          #else
+    205                  I2C->DR = (u8)(SLAVE_ADDRESS << 1) | 1;         	// Send 7-bit device address & Write (R/W = 1)
+    206          #endif  // TEN_BITS_ADDRESS
+    207              }
+    208              while(!(I2C->SR1 & I2C_SR1_ADDR)  &&  tout());  			// Wait for address ack (ADDR)
+    209              /*------------------- Data Receive --------------------------*/
+    210              if (u8_NumByteToRead > 2)                 						// *** more than 2 bytes are received? ***
+    211              {
+    212                  I2C->SR3;                                     			// ADDR clearing sequence    
+    213                  while(u8_NumByteToRead > 3  &&  tout())       			// not last three bytes?
+    214                  {
+    215                      while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 				// Wait for BTF
+    216                      *u8_DataBuffer++ = I2C->DR;                   				// Reading next data byte
+    217                      --u8_NumByteToRead;																		// Decrease Numbyte to reade by 1
+    218                  }
+    219                  //last three bytes should be read
+    220                  while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 			// Wait for BTF
+    221                  I2C->CR2 &=~I2C_CR2_ACK;                      			// Clear ACK
+    222                  disableInterrupts();                          			// Errata workaround (Disable interrupt)
+    223                  *u8_DataBuffer++ = I2C->DR;                     		// Read 1st byte
+    224                  I2C->CR2 |= I2C_CR2_STOP;                       		// Generate stop here (STOP=1)
+    225                  *u8_DataBuffer++ = I2C->DR;                     		// Read 2nd byte
+    226                  enableInterrupts();																	// Errata workaround (Enable interrupt)
+    227                  while(!(I2C->SR1 & I2C_SR1_RXNE)  &&  tout());			// Wait for RXNE
+    228                  *u8_DataBuffer++ = I2C->DR;                   			// Read 3rd Data byte
+    229              }
+    230              else
+    231              {
+    232                  if(u8_NumByteToRead == 2)                						// *** just two bytes are received? ***
+    233                  {
+    234                      I2C->CR2 |= I2C_CR2_POS;                      		// Set POS bit (NACK at next received byte)
+    235                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    236                      I2C->SR3;                                       	// Clear ADDR Flag
+    237                      I2C->CR2 &=~I2C_CR2_ACK;                        	// Clear ACK 
+    238                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    239                      while(!(I2C->SR1 & I2C_SR1_BTF)  &&  tout()); 		// Wait for BTF
+    240                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    241                      I2C->CR2 |= I2C_CR2_STOP;                       	// Generate stop here (STOP=1)
+    242                      *u8_DataBuffer++ = I2C->DR;                     	// Read 1st Data byte
+    243                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    244                      *u8_DataBuffer = I2C->DR;													// Read 2nd Data byte
+    245                  }
+    246                  else                                      					// *** only one byte is received ***
+    247                  {
+    248                      I2C->CR2 &=~I2C_CR2_ACK;;                     		// Clear ACK 
+    249                      disableInterrupts();                          		// Errata workaround (Disable interrupt)
+    250                      I2C->SR3;                                       	// Clear ADDR Flag   
+    251                      I2C->CR2 |= I2C_CR2_STOP;                       	// generate stop here (STOP=1)
+    252                      enableInterrupts();																// Errata workaround (Enable interrupt)
+    253                      while(!(I2C->SR1 & I2C_SR1_RXNE)  &&  tout()); 		// test EV7, wait for RxNE
+    254                      *u8_DataBuffer = I2C->DR;                     		// Read Data byte
+    255                  }
+    256              }
+    257              /*--------------- All Data Received -----------------------*/
+    258              while((I2C->CR2 & I2C_CR2_STOP)  &&  tout());     		// Wait until stop is performed (STOPF = 1)
+    259              I2C->CR2 &=~I2C_CR2_POS;                          		// return POS to default state (POS=0)
+    260          }
+    261          
+    262          /******************************************************************************
+    263           * Function name : I2C_WriteRegister
+    264           * Description 	: write defined number bytes to slave memory starting with defined offset
+    265           * Input param 	: offset in slave memory, number of bytes to write, starting address to send
+    266           * Return 		    : None.
+    267           * See also 		  : None.
+    268           *******************************************************************************/
+    269          void I2C_WriteRegister(u8 u8_regAddr, u8 u8_NumByteToWrite, u8 *u8_DataBuffer)
+    270          {
+    271              while((I2C->SR3 & 2) && tout())       									// Wait while the bus is busy
+    272              {
+    273                  I2C->CR2 |= 2;                        								// STOP=1, generate stop
+    274                  while((I2C->CR2 & 2) && tout());      								// wait until stop is performed
+    275              }
+    276          
+    277              I2C->CR2 |= 1;                        									// START=1, generate start
+    278              while(((I2C->SR1 & 1)==0) && tout()); 									// Wait for start bit detection (SB)
+    279              dead_time();                          									// SB clearing sequence
+    280              if(tout())
+    281              {
+    282          #ifdef TEN_BITS_ADDRESS															  // TEN_BIT_ADDRESS decalred in I2c_master_poll.h
+    283                  I2C->DR = (u8)(((SLAVE_ADDRESS >> 7) & 6) | 0xF0);  // Send header of 10-bit device address (R/W = 0)
+    284                  while(!(I2C->SR1 & 8) &&  tout());    							// Wait for header ack (ADD10)
+    285                  if(tout())
+    286                  {
+    287                      I2C->DR = (u8)(SLAVE_ADDRESS);        						// Send lower 8-bit device address & Write 
+    288                  }
+    289          #else
+    290                  I2C->DR = (u8)(SLAVE_ADDRESS << 1);   							// Send 7-bit device address & Write (R/W = 0)
+    291          #endif
+    292              }
+    293              while(!(I2C->SR1 & 2) && tout());     									// Wait for address ack (ADDR)
+    294              dead_time();                          									// ADDR clearing sequence
+    295              I2C->SR3;
+    296              while(!(I2C->SR1 & 0x80) && tout());  									// Wait for TxE
+    297              if(tout())
+    298              {
+    299                  I2C->DR = u8_regAddr;                 								// send Offset command
+    300              }
+    301              if(u8_NumByteToWrite)
+    302              {
+    303                  while(u8_NumByteToWrite--)          									
+    304                  {																											// write data loop start
+    305                      while(!(I2C->SR1 & 0x80) && tout());  								// test EV8 - wait for TxE
+    306                      I2C->DR = *u8_DataBuffer++;           								// send next data byte
+    307                  }																											// write data loop end
+    308              }
+    309              while(((I2C->SR1 & 0x84) != 0x84) && tout()); 					// Wait for TxE & BTF
+    310              dead_time();                          									// clearing sequence
+    311          
+    312              I2C->CR2 |= 2;                        									// generate stop here (STOP=1)
+    313              while((I2C->CR2 & 2) && tout());      									// wait until stop is performed  
+    314          }
+    315          
+    316          /******************************************************************************
+    317           * Function name : ErrProc
+    318           * Description 	: Manage all I2C error detected by interrupt handler
+    319           * Input param 	: None
+    320           * Return 		    : None
+    321           * See also 		  : None
+    322           *******************************************************************************/
+    323          void ErrProc(void)
+    324          {
+    325              // Clear Error Falg
+    326              I2C->SR2= 0;
+    327              // STOP=1, generate stop
+    328              I2C->CR2 |= 2;  
+    329              // Disable Timout 
+    330              TIM4_tout= 0;
+    331              // Switch on LED3 for I2C Error detection
+    332              switch_on(LED3);
+    333          }
+    334          
+    335          
+    336          
+    337          /******************************************************************************
+    338           * Function name : TIM4_Init
+    339           * Description 	: Initialize TIM4 peripheral
+    340           * Input param 	: None
+    341           * Return 		    : None
+    342           * See also 		  : None
+    343           *******************************************************************************/
+    344          void TIM4_Init (void) {
+    345              TIM4->ARR = 0x80;                // init timer 4 1ms inetrrupts
+    346              TIM4->PSCR= 7;
+    347              TIM4->IER = 1;
+    348              TIM4->CR1 |= 1;
+    349          }
+    350          
+    351          /******************************************************************************
+    352           * Function name : I2C_error_Interrupt_Handler
+    353           * Description 	: Manage all I2C error inetrrupts
+    354           * Input param 	: None
+    355           * Return 		    : None
+    356           * See also 		  : None
+    357           *******************************************************************************/
+    358          #ifdef _COSMIC_
+    359          @far @interrupt void I2C_error_Interrupt_Handler (void) {
+    360          #else
+    361              void I2CInterruptHandle (void) interrupt 19 {
+    362          #endif
+    363                  ErrProc();
+    364              }
+    365          
+    366              /******************************************************************************
+    367               * Function name : TIM4InterruptHandle
+    368               * Description 	: Testing load for Main 
+    369               * Input param 	: None
+    370               * Return 		    : None
+    371               * See also 		  : None
+    372               *******************************************************************************/
+    373          #ifdef _COSMIC_
+    374              @far @interrupt void TIM4InterruptHandle (void) {
+    375          #else
+    376                  void TIM4InterruptHandle (void) interrupt 23 {
+    377          #endif
+    378                      u8 dly= 10;
+    379          
+    380                      TIM4->SR1= 0;
+    381          
+    382                      if(TIM4_tout)
+    383                          if(--TIM4_tout == 0)
+    384          #ifdef _COSMIC_
+    385                              _asm("nop");
+    386          #else
+    387                      _nop_();
+    388          #endif
+    389                      while(dly--);
+    390          }
+
+Errors: 5
+Warnings: 2

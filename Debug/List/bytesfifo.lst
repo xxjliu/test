@@ -1,0 +1,256 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:34 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\bytesfifo.c       #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\bytesfifo.c" -e  #
+#                    -Ohz --debug --code_model small --data_model medium -o   #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\bytesfifo.lst    #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\bytesfifo.o       #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\bytesfifo.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			bytefifo.h
+      6          * Description:		bytefifo head file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          #include "type.h"		
+     18          //include public header files
+     19          #include <string.h>
+     20          #include "bytesfifo.h"
+     21          
+     22          // bytes fifo initial
+     23          void
+     24          	BytesFifoInit(
+     25          		BYTES_FIFO*	Fifo,
+     26          		BYTE*		Buf,
+     27          		BYTE		Len
+     28          		)							
+     29          {
+     30          	Fifo->Buf = Buf;
+     31          	Fifo->Len = Len;
+     32          	Fifo->Head = 0;
+     33          	Fifo->Count = 0;
+     34          }
+     35          
+     36          
+     37          
+     38          // Judge fifo empty state
+     39          BOOL
+     40          	BytesFifoIsEmpty(
+     41          		BYTES_FIFO*	Fifo
+     42          		)
+     43          {
+     44          	return (Fifo->Count == 0);
+     45          }
+     46          
+     47          
+     48          // Judge fifo full state
+     49          BOOL
+     50          	BytesFifoIsFull(
+     51          		BYTES_FIFO*	Fifo
+     52          		)
+     53          {
+     54          	return (Fifo->Count >= Fifo->Len);
+     55          }
+     56          
+     57          
+     58          
+     59          // get current count in the fifo
+     60          BYTE
+     61          	BytesFifoGetCount(
+     62          		BYTES_FIFO*	Fifo
+     63          		)
+     64          {
+     65          	return Fifo->Count;
+     66          }
+     67          
+     68          
+     69          // get a byte from the fifo head, ane delete the byte from the fifo
+     70          BYTE	
+     71          	BytesFifoGetByte(
+     72          		BYTES_FIFO*	Fifo
+     73          		)
+     74          {
+     75          	BYTE temp;
+     76          	temp = Fifo->Buf[Fifo->Head];
+     77          	if(Fifo->Count)
+     78          		{
+     79          		Fifo->Head = (Fifo->Head + 1) % Fifo->Len;
+     80          		Fifo->Count--;
+     81          		}
+     82          	return temp;
+     83          }
+     84          
+     85          
+     86          
+     87          // copy Len byte from the fifo to the Buf, the first byte position in the fifo is Start
+     88          BOOL
+     89          	BytesFifoCopyBytes(
+     90          		BYTES_FIFO*	Fifo,
+     91          		BYTE*		Buf,				
+     92          		BYTE		Start,
+     93          		BYTE		Len
+     94          		)
+     95          {
+     96          	if(Start + Len > Fifo->Count)
+     97          		{
+     98          		return FALSE;
+     99          		}
+    100          	while(Len--)
+    101          		{
+    102          		*Buf = Fifo->Buf[(Fifo->Head + Start) % Fifo->Len];
+    103          		Buf++;
+    104          		Start++;
+    105          		}
+    106          	return TRUE;
+    107          }
+    108          
+    109          
+    110          
+    111          // delete Len bytes from the fifo head
+    112          BOOL
+    113          	BytesFifoDeleteBytes(
+    114          		BYTES_FIFO*	Fifo,
+    115          		BYTE		Len
+    116          		)
+    117          {	
+    118          	if(Len > Fifo->Count)
+    119          		{
+    120          		Len = Fifo->Count;
+    121          		} 
+    122          	Fifo->Count -= Len;
+    123          	Fifo->Head = (Fifo->Head + Len) % Fifo->Len;
+    124          	return TRUE;
+    125          }
+    126          
+    127          
+    128          // add Len bytes from the Buf to the fifo tail
+    129          BOOL
+    130          	BytesFifoAddBytes(
+    131          		BYTES_FIFO*	Fifo,
+    132          		BYTE*		Buf,
+    133          		BYTE		Len
+    134          		)
+    135          {
+    136          	if(Fifo->Count + Len > Fifo->Len)
+    137          		{
+    138          		//DBG(("BytesFifoPutBytes:FALSE\n"));
+    139          		return FALSE;
+    140          		}
+    141          	while(Len--)
+    142          		{
+    143          		Fifo->Buf[(Fifo->Head + Fifo->Count) % Fifo->Len] = *Buf;
+    144          		Fifo->Count++;
+    145          		Buf++;
+    146          		}
+    147          //	DBG(("BytesFifoPutBytes:TRUE\n"));
+    148          	return TRUE;
+    149          }
+    150          
+    151          
+    152          
+    153          // add a byte to the fifo tail in interrupt
+    154          BOOL
+    155          	BytesFifoAddByteInt(
+    156          		BYTES_FIFO*	Fifo,
+    157          		BYTE		ByteData
+    158          		)
+    159          {
+    160          	if(Fifo->Count >= Fifo->Len)
+    161          		{
+    162          		return FALSE;
+    163          		}
+    164          	Fifo->Buf[(Fifo->Head + Fifo->Count) % Fifo->Len] = ByteData;
+    165          	Fifo->Count++;
+    166          	return TRUE;
+    167          }
+    168          
+    169          
+    170          
+    171          // get a byte from the fifo head, ane delete the byte from the fifo in interrupt
+    172          BYTE	
+    173          	BytesFifoGetByteInt(
+    174          		BYTES_FIFO*	Fifo
+    175          		)
+    176          {
+    177          	BYTE temp = Fifo->Buf[Fifo->Head];
+    178          	if(Fifo->Count)
+    179          		{
+    180          		Fifo->Head = (Fifo->Head + 1) % Fifo->Len;
+    181          		Fifo->Count--;
+    182          		}
+    183          	return temp;
+    184          }
+    185          
+    186          
+    187          // judge fifo empty in interrupt
+    188          BOOL
+    189          	BytesFifoIsEmptyInt(
+    190          		BYTES_FIFO*	Fifo
+    191          		)
+    192          {
+    193          	return (Fifo->Count == 0);
+    194          }
+    195          
+    196          
+    197          
+
+   Section sizes:
+
+     Function/Label       Bytes
+     --------------       -----
+     BytesFifoInit          30
+     BytesFifoIsEmpty       11
+     BytesFifoIsFull        19
+     BytesFifoGetCount       6
+     ?Subroutine3            7
+     BytesFifoGetByte        9
+     ?Subroutine1           20
+     ?Subroutine0           26
+     ?Subroutine2            9
+     BytesFifoCopyBytes    103
+     BytesFifoDeleteBytes   54
+     BytesFifoAddBytes     107
+     BytesFifoAddByteInt    56
+     BytesFifoGetByteInt     9
+     BytesFifoIsEmptyInt    11
+
+ 
+ 477 bytes in section .near_func.text
+ 
+ 477 bytes of CODE memory
+
+Errors: none
+Warnings: none

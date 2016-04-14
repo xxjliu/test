@@ -1,0 +1,205 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.30.1.20036 [Evaluation] for STM813/Nov/2012  14:59:02 #
+# Copyright 2010-2011 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  H:\stm8s903\user\src\key.c                               #
+#    Command line =  H:\stm8s903\user\src\key.c -e -Ohz --debug --code_model  #
+#                    small --data_model medium -o H:\stm8s903\Debug\Obj\      #
+#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
+#                    Workbench 6.0 Evaluation_3\stm8\LIB\dlstm8smn.h" -lcN    #
+#                    H:\stm8s903\Debug\List\ -I H:\stm8s903/user/\ -I         #
+#                    H:\stm8s903/user/src/\ -I H:\stm8s903/user/inc/\ -I      #
+#                    H:\stm8s903/addon/\ -I H:\stm8s903/addon/src/\ -I        #
+#                    H:\stm8s903/addon/inc/\ -I H:\stm8s903/sys/\ -I          #
+#                    H:\stm8s903/sys/inc/\ -I H:\stm8s903/sys/src/\ -I        #
+#                    H:\stm8s903/lib/\ -I H:\stm8s903/lib/src/\ -I            #
+#                    H:\stm8s903/lib/inc/\ --vregs 16                         #
+#    List file    =  H:\stm8s903\Debug\List\key.lst                           #
+#    Object file  =  H:\stm8s903\Debug\Obj\key.o                              #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+H:\stm8s903\user\src\key.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			key.c
+      6          * Description:		key c file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          /*
+     18          **********************************************************
+     19          *					INCLUDE
+     20          **********************************************************
+     21          */
+     22          //include public header files
+     23          #include "type.h"
+     24          #include "debug.h"
+     25          #include "keycfg.h"
+     26          #include "key.h"
+     27          
+     28          	KEY_CTRL	gSysKey;
+     29          
+     30          static const BYTE KeyEvent[][3] = 
+     31          	{
+     32          		{IN_KEY_NONE, 			IN_KEY_NONE, 		IN_KEY_NONE			},	//NO KEY
+     33          		{IN_KEY_PWR_SP, 		IN_KEY_PWR_CP, 	        IN_KEY_PWR_CPR    },	//K1
+     34          		{IN_KEY_LEVEL, 			IN_KEY_LEVEL_CP, 	IN_KEY_LEVEL_CPR	},	//K2
+     35          
+     36          
+     37          	};	
+     38          
+     39          
+     40          // Initialize key
+     41          extern void
+     42          	KeyInit(
+     43          		void
+     44          		)
+     45          {
+     46          	KEY1_IN();
+     47          	KEY2_IN();
+     48                  gSysKey.ScanTimer = 10;
+     49                  gSysKey.Timer = KEY_PRESS_CP_TIME;
+     50                  gSysKey.State = KEY_STATE_IDLE;
+     51                  gSysKey.Index = IN_KEY_NONE;
+     52                  gSysKey.PreIndex = IN_KEY_NONE;
+     53                  
+     54          }
+     55          
+     56          
+     57          
+     58          extern BYTE
+     59          	GetKeyIndex(
+     60          		void
+     61          		)
+     62          {
+     63          	BYTE	i = 0; 
+     64          //I/II         
+     65                  if(GET_KEY2_DATA() != 0)
+     66          	  {
+     67          	  i = 2;	
+     68          	  }
+     69          //ONOFF        
+     70          	else if(GET_KEY1_DATA() != 0)
+     71          	  {
+     72          	  i = 1;	
+     73          	  }
+     74          	
+     75          
+     76          //	DBG(("KeyIndex:%d\n", i));	
+     77          	return(i);
+     78          }
+     79          
+     80          
+     81          //key process
+     82          extern BYTE
+     83          	GetKeyEvent(
+     84          		void
+     85          		)
+     86          {
+     87          	BYTE event = IN_KEY_NONE;
+     88          	if(gSysKey.ScanTimer == 0)
+     89          		{
+     90          		gSysKey.ScanTimer = 10;
+     91          		gSysKey.Index = GetKeyIndex();
+     92          		switch(gSysKey.State)
+     93          			{
+     94          			case KEY_STATE_IDLE:
+     95          				{
+     96          				if(gSysKey.Index != IN_KEY_NONE)
+     97          					{
+     98          					gSysKey.PreIndex = gSysKey.Index;
+     99          					gSysKey.State = KEY_STATE_JITTER;
+    100          					}
+    101          				}
+    102          				break;
+    103          				
+    104          			case KEY_STATE_JITTER:
+    105          				{
+    106          				if(gSysKey.PreIndex != gSysKey.Index)
+    107          					{
+    108          					
+    109          					gSysKey.State = KEY_STATE_IDLE;
+    110          					}
+    111          				else
+    112          					{
+    113          					event = KeyEvent[gSysKey.PreIndex][0];
+    114          					gSysKey.Timer  = KEY_PRESS_CP_TIME;
+    115          					gSysKey.State = KEY_STATE_PRESS_DOWN;
+    116          					}
+    117          				}
+    118          				break;
+    119          
+    120          			case KEY_STATE_PRESS_DOWN:
+    121          				{
+    122          				if(gSysKey.PreIndex != gSysKey.Index)
+    123          					{
+    124          					
+    125          					gSysKey.State = KEY_STATE_IDLE;
+    126          					//event = KeyEvent[gSysKey.PreIndex][0];
+    127                                                  
+    128          					}
+    129                                          
+    130          				//else if(gSysKey.Timer == 0)
+    131          					//{
+    132          					
+    133          					//gSysKey.State = KEY_STATE_CP;
+    134          					//event = KeyEvent[gSysKey.PreIndex][1];
+    135          					//}
+    136          				}
+    137          				break;
+    138          /*
+    139          			case KEY_STATE_CP:
+    140          				{	
+    141          				if(gSysKey.PreIndex != gSysKey.Index)
+    142          					{
+    143          					
+    144          					gSysKey.State = KEY_STATE_IDLE;
+    145          					event = KeyEvent[gSysKey.PreIndex][2];
+    146          					}
+    147          				}
+    148          				break;
+    149          */
+    150          			default:
+    151          				{
+    152          				gSysKey.State = KEY_STATE_IDLE;
+    153          				}
+    154          				break;
+    155          			}
+    156          		}
+    157          	return(event);
+    158          }
+    159          
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     gSysKey           7
+     KeyEvent          9
+     KeyInit          49
+     GetKeyIndex      45
+     GetKeyEvent     113
+
+ 
+   7 bytes in section .near.bss
+   9 bytes in section .near.rodata
+ 207 bytes in section .near_func.text
+ 
+ 207 bytes of CODE  memory
+   9 bytes of CONST memory
+   7 bytes of DATA  memory
+
+Errors: none
+Warnings: none

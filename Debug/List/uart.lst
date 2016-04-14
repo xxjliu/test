@@ -1,0 +1,275 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:29 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\uart.c            #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\uart.c" -e -Ohz  #
+#                    --debug --code_model small --data_model medium -o        #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\uart.lst         #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\uart.o            #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\uart.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			uart.c
+      6          * Description:		uart c file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          
+     18          #include "type.h"
+     19          #include 	<stdio.h>
+     20          //include public header files
+     21          #include "utility.h"
+     22          #include "bytesfifo.h"
+     23          
+     24          #include "stm8s_uart1.h"        
+     25          #include "uart.h"
+     26          //const unsigned  int TabL[11]={754,763,772,780,789,797,805,813,821,828,836};//797,789,780,772,763,754,};
+     27          //const unsigned  int TabH[61]={754,745,736,727,718,709,699,690,680,670,660,651,641,631,621,611,601,591,581,571,561,551,541,532,522,512,502,493,483,474,464,455,446,437,428,419,410,401,393,384,376,368,360,352,344,336,329,321,314,307,300,293,286,279,273,267,260,254,248,242,237};
+     28          //extern unsigned Ntc_val;
+     29          
+     30          
+     31          	BYTE 		s_RcvBuffer[RCV_BUFFER_LEN];			// memory of the receive-fifo
+     32          	BYTE 		s_SendBuffer[SEND_BUFFER_LEN];		// memory of the send-fifo
+     33          	BYTES_FIFO 	s_RcvFifo1;							// structure of the receive-fifo
+     34          	BYTES_FIFO 	s_SendFifo;							// structure of the send-fifo
+     35          	BYTE		UartRecCnt;							//receive data byte length
+     36          	BYTE		UartRecData[UART_REC_BYTE_LEN];		//receive data
+     37          
+     38          //Uart1 Init  STM8S903
+     39          /*void Uart1Init(DWORD bandrate)	
+     40          {
+     41          	UART1_DeInit();      
+     42          	//UART1_TX_OUT();		//TRISC6 = 0; 定义该IO输出
+     43          	//UART1_RX_IN();		//TRISC7 = 1;
+     44          //  UART1_Init(u32 BaudRate, UART1_WordLength_TypeDef WordLength, UART1_StopBits_TypeDef StopBits, UART1_Parity_TypeDef Parity, UART1_SyncMode_TypeDef SyncMode, UART1_Mode_TypeDef Mode)
+     45              UART1_Init((u32)bandrate, UART1_WORDLENGTH_8D, UART1_STOPBITS_1, UART1_PARITY_NO, UART1_SYNCMODE_CLOCK_DISABLE, UART1_MODE_TXRX_ENABLE);
+     46          //  UART1_Cmd(ENABLE);
+     47              
+     48          //Enable UART1 Transmit interrupt
+     49          //  UART1_ITConfig(UART1_IT_TXE, ENABLE);
+     50              
+     51          //Enable UART1 Receive interrupt
+     52             UART1_ITConfig(UART1_IT_RXNE_OR,ENABLE);
+     53              
+     54              //BytesFifoInit(&s_RcvFifo1, s_RcvBuffer, RCV_BUFFER_LEN);	//init uart receive fifo
+     55              //BytesFifoInit(&s_SendFifo, s_SendBuffer, SEND_BUFFER_LEN);	//init uart send fifo
+     56          
+     57          	Uart1CmdSend(" Uart1 enable!\n", 14);
+     58          
+     59          }  
+     60          */
+     61                    
+     62          
+     63          
+     64            
+     65              
+     66          //send n bytes to the uart send fifo
+     67                  /*
+     68          extern void 
+     69                Uart1CmdSend(
+     70                      const BYTE* str, 
+     71                      BYTE n
+     72                        )
+     73          { 
+     74              BYTE i = 0;  
+     75          	//BytesFifoAddBytes(&s_SendFifo, *str, n);   
+     76          //disable tx interrupt    
+     77              for(i = 0; i < n; i++)
+     78                  {
+     79                  Uart1SendByte(str[i]);
+     80                  }    
+     81          }
+     82          
+     83          */
+     84          
+     85          //	Uart received event handle function 
+     86          /*void Uart1DataReceived(void)
+     87          {
+     88          	//BytesFifoAddByteInt(&s_RcvFifo1, UART1_ReceiveData8());  
+     89          }
+     90          
+     91          
+     92              
+     93          //find command in the uart receive fifo
+     94          extern BYTE
+     95          	Uart1CmdGet(
+     96          		void
+     97          		)
+     98          {
+     99          	BYTE length1 = 0;
+    100          	BYTE length2 = 0;	
+    101          	length1 = BytesFifoGetCount(&s_RcvFifo1);
+    102          	if(length1 == 0)
+    103          		{
+    104          		return 0;
+    105          		}
+    106          //wait rcv complete(accoding bandrate to wait time)
+    107          	while(length1!=length2)
+    108          		{
+    109          		length1 = BytesFifoGetCount(&s_RcvFifo1);
+    110          		WaitMs(5);
+    111          		length2 = BytesFifoGetCount(&s_RcvFifo1);	
+    112          		}
+    113          	UartRecCnt = length1;
+    114          	if(BytesFifoCopyBytes(&s_RcvFifo1, UartRecData, 0, length1))
+    115          		{
+    116          		BytesFifoDeleteBytes(&s_RcvFifo1, length1);
+    117          		//UartCmdSend(UartRecData, length1);
+    118          		return 1;
+    119          		}
+    120          	else
+    121          		{
+    122          		return 0;
+    123          		}
+    124          }
+    125          
+    126          
+    127          //handle uart command
+    128          void Uart1CmdDebug(void)
+    129          {
+    130          	BYTE *cmd;
+    131          	cmd = UartRecData;
+    132          	if(Uart1CmdGet())
+    133          		{
+    134          	  	if(memcmp(cmd, "ATA00101", 8) == 0)
+    135          			{
+    136          			Uart1CmdSend("CMD001-resp\n", 12);	
+    137          			}
+    138          		else if(memcmp(cmd, "ATA00102", 8) == 0)
+    139          			{
+    140          			Uart1CmdSend("CMD002-resp\n", 12);	
+    141          			}
+    142          		else if(memcmp(cmd, "ATA00103", 8) == 0)
+    143          			{
+    144          			Uart1CmdSend("CMD003-resp\n", 12);	
+    145          			}
+    146          		else if(memcmp(cmd, "ATA00104", 8) == 0)
+    147          			{
+    148          			Uart1CmdSend("CMD004-resp\n", 12);	
+    149          			}
+    150          		else if(memcmp(cmd, "ATA00105", 8) == 0)
+    151          			{
+    152          			Uart1CmdSend("CMD005-resp\n", 12);	
+    153          			}
+    154          		else
+    155          			{
+    156          		 	Uart1CmdSend("unknown cmd-resp\n", 17);
+    157          			}
+    158          	}
+    159          }
+    160          //---------------------------------------------------------------------
+    161           void DisplayTemp(void)
+    162               {
+    163               unsigned char j,v;
+    164               Uart1CmdSend("Temp:",4);  //FOR DEBUG 
+    165               v=0;
+    166               if(Ntc_val>756)
+    167               {
+    168                    j=1;
+    169                 if(Ntc_val<=836)
+    170                 {
+    171                   //j=1;
+    172                  while(Ntc_val<TabL[j])
+    173                  {
+    174                    if(j>=10)
+    175                       break; 
+    176                    j+=1;
+    177                  }
+    178                  Uart1SendByte('-');  
+    179                 } 
+    180                 else
+    181                 {
+    182                  Uart1CmdSend("<-10:",4); 
+    183                  Uart1CmdSend("℃",2); 
+    184                  return;
+    185                 }
+    186               }
+    187           //------------------    
+    188               else //        大于0度
+    189               {
+    190                if(Ntc_val>=237)  //0-60C
+    191                 {
+    192                       j=0;
+    193                   while(Ntc_val>TabH[j])
+    194                  {
+    195                    if(j>=60)
+    196                       break; 
+    197                    j+=1;
+    198                  }
+    199                  Uart1SendByte('+');  
+    200                 }
+    201               else
+    202               {
+    203                 Uart1CmdSend(">+60:",4);
+    204                 Uart1CmdSend("℃",2); 
+    205                 return;
+    206               }
+    207              }
+    208                 while(j>=10)
+    209                 {
+    210                   
+    211                   v+=1;
+    212                   j-=10;
+    213                 }
+    214                v|=0x30;
+    215                j|=0x30;  
+    216                
+    217                Uart1SendByte(v); 
+    218                Uart1SendByte(j);    
+    219                  Uart1CmdSend("℃",2); 
+    220               }
+    221          
+    222          
+    223          
+    224          */
+    225          
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     s_RcvBuffer      50
+     s_SendBuffer     50
+     s_RcvFifo1        8
+     s_SendFifo        8
+     UartRecCnt        1
+     UartRecData      50
+
+ 
+ 167 bytes in section .near.bss
+ 
+ 167 bytes of DATA memory
+
+Errors: none
+Warnings: none

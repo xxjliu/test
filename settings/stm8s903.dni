@@ -1,0 +1,111 @@
+[DebugChecksum]
+Checksum=-1997621262
+[DisAssemblyWindow]
+NumStates=_ 1
+State 1=_ 1
+[InstructionProfiling]
+Enabled=_ 0
+[CodeCoverage]
+Enabled=_ 0
+[StackPlugin]
+Enabled=1
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnHow=0
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[TraceHelper]
+Enabled=0
+ShowSource=1
+[BreakpointUsageDialog]
+Placement=_ 422 230 859 508
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=1
+Graph=0
+Symbiont=0
+Exclusions=
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[Interrupts]
+Enabled=1
+[MemoryMap]
+Enabled=0
+Base=0
+UseAuto=0
+TypeViolation=1
+UnspecRange=1
+ActionState=1
+[Trace1]
+Enabled=0
+ShowSource=1
+[array_types]
+Fmt0=unsigned char[24]	3	0
+Fmt1=unsigned char[32]	3	0
+Fmt2=unsigned char[50]	3	0
+[watch_formats]
+Fmt0={W}0:arr	3	2
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Breakpoints]
+Bp0=_ "STD_CODE" "{$PROJ_DIR$}.154.4@1" 0 0 0 0 "" 0 ""
+Bp1=_ "STD_CODE" "{$PROJ_DIR$}.130.1@1" 0 0 0 0 "" 0 ""
+Bp2=_ "STD_CODE" "{$PROJ_DIR$}.121.1@1" 0 0 0 0 "" 0 ""
+Bp3=_ "STD_CODE" "{$PROJ_DIR$}.95.5@1" 0 0 0 0 "" 0 ""
+Bp4=_ "STD_CODE" "{$PROJ_DIR$}.62.5@1" 0 0 0 0 "" 0 ""
+Bp5=_ "STD_CODE" "{$PROJ_DIR$}.47.5@1" 0 0 0 0 "" 0 ""
+Bp6=_ "STD_CODE" "0x008973" 0 0 0 0 "" 0 ""
+Bp7=_ "STD_DATA" "COM2_Revc_Check" 0 0 0 3 0 "" 0 ""
+Bp8=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
+Bp9=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
+Bp10=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
+Bp11=_ "STD_DATA" "Afe_Device_Init" 0 0 0 3 0 "" 0 ""
+Bp12=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.43.5" 1 0 0 0 "" 0 ""
+Bp13=_ "STD_CODE" "{$PROJ_DIR$\sys\src\main.c}.59.5" 1 0 0 0 "" 0 ""
+Count=14
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[Aliases]
+A0=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_iwdg.c" ""
+A1=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_tim1.c" ""
+A2=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_tim5.c" ""
+A3=_ "D:\R88 XCQ-5S\R88 XCQ-5S\lib\src\stm8s_tim6.c" ""
+A4=_ "D:\R88 XCQ-5S\R88 XCQ-5S\user\src\user.c" ""
+A5=_ "D:\STMPath\26X9010(MPP 2IN1)\lib\src\stm8s_exti.c" ""
+A6=_ "E:\LiangsxWorks\power XCQ-2S\addon\src\utility.c" ""
+A7=_ "E:\MMP\PPM\lib\src\stm8s_gpio.c" ""
+A8=_ "E:\MMP\PPM\lib\src\stm8s_tim6.c" ""
+A9=_ "E:\power XCQ-2Sa\power XCQ-2S\sys\src\main.c" ""
+A10=_ "F:\chengxu\stm8s903\lib\src\stm8s_tim1.c" ""
+A11=_ "F:\chengxu\stm8s903\lib\src\stm8s_tim5.c" ""
+A12=_ "H:\stm8s903\lib\src\stm8s_flash.c" ""
+A13=_ "H:\stm8s903\sys\src\main.c" ""
+Count=14
+SuppressDialog=1

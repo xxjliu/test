@@ -1,0 +1,1007 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM831/Mar/2016  15:50:23 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c           #
+#    Command line =  D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c -e -Om    #
+#                    --no_unroll --no_inline --no_tbaa --no_cross_call        #
+#                    --debug --code_model small --data_model medium -o        #
+#                    D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\               #
+#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
+#                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
+#                    D:\ProjectPath\STMPath\AC100_a0\Debug\List\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/\ -I                #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/src/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/inc/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/\ -I               #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/src/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/inc/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/inc/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/inc/\ --vregs 16     #
+#    List file    =  D:\ProjectPath\STMPath\AC100_a0\Debug\List\user.lst      #
+#    Object file  =  D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\user.o         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\ProjectPath\STMPath\AC100_a0\sys\src\user.c
+      1          #include "user.h"
+      2          #include "macro_def.h"
+      3          #include "iostm8s003f3.h"
+      4          //==================================================================
+      5          /*
+      6          
+      7          项目                      Item										常温25℃                                                                     Normal Temperature  25℃ 																				
+      8          								最小值(Min)	                常值(Type)	                        最大值(Max)						测试(Test)			特殊控制点		
+      9          过放保护电压 (V)        Over discharge detection voltage	4.2		                4.23		                        4.26											
+     10          过放保护延时 (mS)       Over discharge detection voltage	500				1000					1500											
+     11          过放保护电压 (V)        Over discharge detection voltage	2.65				2.7					2.75											
+     12          过放保护延迟时间(ms)    Over discharge detection delay 		200				400					600											
+     13          放电过流1保护电流(A)    Over current1  detection  current  	17				20					23											
+     14          放电过流1保护延时(s)    Over current  detection delay 		10				20					30											
+     15          放电过流2保护电流(A)    Over current2  detection  current  	22				25					28											
+     16          放电过流2保护延时(s)    Over current2  detection delay 		0.4				0.5					0.6											
+     17          充电低温保护(°C)       charge　Over temperature protect 	-3（NTC阻值：32.4037KΩ）	0（NTC阻值：28.2671KΩ）		+3（NTC阻值：24.7264KΩ）											
+     18          充电高温保护(°C)       charge　Over temperature protect 	42（NTC阻值：5.3793KΩ）	45（NTC阻值：4.8520KΩ）		48（NTC阻值：4.3840KΩ）											
+     19          "放电低温保护(°C)      
+     20          discharge Over temperature protect  "	-25（NTC阻值：96.862KΩ）	-20（NTC阻值：74.3538KΩ）		-15（NTC阻值：57.6261KΩ）											
+     21          "放电高温保护(°C)      
+     22          discharge Over temperature protect "	62（NTC阻值：2.7905KΩ）	65（NTC阻值：2.5442KΩ）		68（NTC阻值：2.3229KΩ）											
+     23          静态(不按开关)自耗电(uA)Current consumption  				                 	10											
+     24          充电不放电																														
+     25          短路保护  Circuit   Short																														
+     26          ESD防护										需重点加强ESD防护（如NTC端子，LED灯)																		T1		
+     27          充电电量显示		亮四个灯LED1,LED2,LED3，LED4(绿灯)					11.4±0.3																		电量显示及照明灯测试时,产线只需测绿灯和白灯亮即可,各电压点显示情况需抽检测试.		
+     28          			亮三个灯LED1,LED2,LED3(绿灯)						10.1±0.3									11.4±0.3											
+     29          			亮两个灯 LED2,LED3(绿灯)						8.8±0.3									10.1±0.3											
+     30          			亮一个灯LED1(绿灯)						        8.1±0.3									8.8±0.3											
+     31          			LED1闪烁								8.1±0.3											
+     32          烧录程序信息							烧录程序版本：																						
+     33          								PCM 设计 VCC 电压：						5V																
+     34          								校准基准电压：																						
+     35          								校准误差计算公式：																						
+     36          	注意：																													
+     37          
+     38          */
+     39          //===========================================================
+     40          #define ADJUST_ADDR       0x004000
+     41          #define SOC_ADDR          0x004004 
+     42          //=== ADDR_BASE ==0x004000    ADDR_END ==0x00407F
+     43          //void FLASH_ProgramByte(uint32_t Address, uint8_t Data);
+     44          //uint8_t FLASH_ReadByte(uint32_t Address);
+     45          //void FLASH_ProgramWord(uint32_t Address, uint32_t Data); 
+     46          //==================================================================
+     47          //==================================================================
+     48          void PWM2_Init(void)
+     49          { 
+     50              CLK_PCKENR1 |= 0xA0; 
+     51              TIM2_CR1 =0;              //关闭TIM2
+     52              TIM2_IER = 0; 
+     53              TIM2_PSCR = 0;  
+     54              TIM2_ARRH = 0x07;
+     55              TIM2_ARRL = 0xCF;         //16M/(1999+1)=8KHz   //2MHz/(1999+1) = 1KHz 
+     56              TIM2_CR1 |= 0x80;         //使能ARP,边沿对齐，向上计数
+     57              TIM2_EGR |= 0x01;         //更新TIM1，使PSC有效
+     58              TIM2_EGR |= 0x20;         //重新初始化TIM1 
+     59              TIM2_CCR1H =0;           
+     60              TIM2_CCR1L =0; 
+     61              TIM2_CCMR1 =0x68;         //配置TIM2_CH1为PWM1模式输出 
+     62              TIM2_CCER1 =0x01;         //Enable TIM2_CH1 channel 
+     63              TIM2_CR1 |= 0x01;         //使能TIM2 
+     64          }
+     65          //==================================================================
+     66          //==================================================================
+     67          void PWM1_Init(void)
+     68          {
+     69              CLK_PCKENR1 |= 0x80;
+     70              TIM1_CR1 &= ~0x01;      //关闭TIM1 
+     71              TIM1_PSCRH = 0;
+     72              TIM1_PSCRL = 0;         //不分频2MHz 
+     73              TIM1_ARRH = 0x07;
+     74              TIM1_ARRL = 0xCF;      //2MHz/(1999+1) = 1KHz 
+     75              TIM1_CR1 |= 0x80;      //使能ARP,边沿对齐，向上计数
+     76              TIM1_EGR |= 0x01;      //更新TIM1，使PSC有效
+     77              TIM1_EGR |= 0x20;      //重新初始化TIM1 
+     78              
+     79              TIM1_CCR1H = 0;
+     80              TIM1_CCR1L = 0; 
+     81              TIM1_CCMR1 = 0x68;       //配置TIM1_CH1为PWM1模式输出
+     82              TIM1_CCER1 |= 0x01;      //Enable TIM1_CH1 channel
+     83              
+     84              TIM1_CCR2H = 0;
+     85              TIM1_CCR2L = 0;
+     86              TIM1_CCMR2 = 0x68;       //配置TIM1_CH2为PWM1模式输出
+     87              TIM1_CCER1 |= 0x10;      //Enable TIM1_CH2 channel
+     88              
+     89              //TIM1_CCR3H = 0x07;
+     90              //TIM1_CCR3L = 0xE6;       //占空比50% 
+     91              //TIM1_CCMR3 = 0x68;       //配置TIM1_CH3为PWM1模式输出
+     92              //TIM1_CCER2 |= 0x01;      //使能TIM1_CH3通道
+     93              
+     94              //TIM1_CCR4H = 0x03;
+     95              //TIM1_CCR4L = 0xE6;       //占空比50%
+     96              //TIM1_CCMR4 = 0x68;       //配置TIM1_CH4为PWM1模式输出 
+     97              //TIM1_CCER2 |= 0x10;      //Enable TIM1_CH4 channel 
+     98              
+     99              TIM1_BKR |= 0x80;          //
+    100              TIM1_CR1 |= 0x01;          //使能TIM1 
+    101          }
+    102          //==================================================================
+    103          //==================================================================
+    104          unsigned int ADC(int channel)
+    105          {
+    106              unsigned int value =0;
+    107              unsigned char tempH,tempL; 
+    108              //CLK_PCKENR2 |=0x08; 
+    109              ADC_CSR = channel;                // 清除EOC转换结束标志, select channel
+    110              nop();  nop(); nop(); nop(); 
+    111              ADC_CR1 |= 0x01;                  // 开始单次转换 
+    112              nop(); nop(); nop(); nop(); nop();
+    113              nop(); nop(); nop(); nop(); nop();
+    114              ADC_CR1 |= 0x01;                  // 开始单次转换
+    115              nop(); nop(); nop(); nop();
+    116              nop(); nop(); nop(); nop();
+    117              while(!(ADC_CSR & 0x80))nop();    // 等待单次转换完成 
+    118              tempL = ADC_DRL;                  // 先读低8位
+    119              tempH = ADC_DRH;                  // 再读高8位，设置数据左对齐
+    120              value=(tempH<<8)|tempL;
+    121              ADC_CSR &= ~(0x80);               // 清除EOC转换结束标志  
+    122              ADC_CR1 &= ~(0x01); 
+    123              return(value);  
+    124          }
+    125          //==================================================================
+    126          //==================================================================
+    127          unsigned int ADConverse(unsigned char channel)
+    128          { 
+    129              unsigned int value=0;
+    130              unsigned int max_value =0;
+    131              unsigned int min_value =0x7FFF;
+    132              unsigned char i;  
+    133              CLK_PCKENR2 |=0x08;  
+    134              for(i =0;i <100;i++)
+    135              {
+    136                nop();nop();
+    137              }
+    138              for(i=0;i<10;i++)
+    139              {
+    140                Adc_value[i] = ADC(channel);  
+    141                value += Adc_value[i];
+    142                if(max_value <Adc_value[i])
+    143                {
+    144                  max_value =Adc_value[i];
+    145                }
+    146                 
+    147                if(min_value >Adc_value[i])
+    148                {
+    149                  min_value = Adc_value[i];
+    150                }
+    151              }
+    152              value = value -max_value -min_value;
+    153              value >>= 3; 
+    154              CLK_PCKENR2 &=~(0x08); 
+    155              return value; 
+    156          }
+    157          //================================================================================
+    158          //==================================================================
+    159          void SysInit(void)
+    160          {
+    161              //-------system clock                                                       
+    162              CLK_ICKR = 0X01;    //internal RC enable
+    163              while(!(CLK_ICKR&0x02)); 
+    164              CLK_SWCR = 0;       //禁止时钟切换及相关中断
+    165              CLK_CKDIVR = 0X02;  //主频为Fmaster为Fhsi：16MHz, Fcpu为4MHz  0.25us
+    166              CLK_PCKENR1 = 0;    //禁止Fmaster 与外设连接
+    167              CLK_PCKENR2 = 0;
+    168          }
+    169          void ADC_Init(void)
+    170          {
+    171              //------------------A/D conversion 
+    172              CLK_PCKENR2 |= 0x08;           //使能Fmaster与外设ADC模块连接 
+    173              ADC_CR1 = 0x00;               // ADC时钟=主时钟/2=8MHZ,单次转换模式Tad =1/8,未使能ADC
+    174              ADC_CR2 = 0x08;               // A/D 结果数据右对齐
+    175              ADC_CSR = 0x00;               // 清转换结束标志位EOC，
+    176              ADC_CR3 = 0x00;
+    177              ADC_TDRH = 0xFF;              //禁止施密特触发功能
+    178              ADC_TDRL = 0x00; 
+    179              nop(); nop(); nop();
+    180              ADC_TDRL = 0x7C;              // AIN2、AIN3、AIN4、AIN5、AIN6 0b01111100 
+    181              CLK_PCKENR2 &=~(0x08);
+    182          }
+    183          //==================================================================
+    184          //==================================================================
+    185          //---------------WatchDog  LSI 128KHz/2 = 64KHz
+    186          void ClrWdt(void)
+    187          {
+    188              IWDG_KR = 0x55;   //解除保护
+    189              IWDG_RLR = 0xFF;  //刷新内容
+    190              IWDG_PR = 4;//3;      //127ms
+    191              IWDG_KR = 0xAA;   //刷新及恢复保护
+    192              IWDG_KR = 0xCC;   //独立看门狗启动
+    193          } 
+    194          //==================================================================
+    195          //==================================================================
+    196          void PortInit(void)
+    197          { 
+    198            GPIO_Init(GPIOA, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);//Vref  //GPIO_MODE_IN_PU_NO_IT);        //chger in 
+    199            GPIO_Init(GPIOA, GPIO_PIN_2, GPIO_MODE_IN_FL_NO_IT);        //BIG_LOAD_DET
+    200            GPIO_Init(GPIOA, GPIO_PIN_1, GPIO_MODE_IN_PU_NO_IT);        //充电过流
+    201            
+    202            GPIO_Init(GPIOB, GPIO_PIN_5, GPIO_MODE_IN_FL_NO_IT);//chger in //GPIO_MODE_OUT_PP_LOW_FAST);    //VREF
+    203            GPIO_Init(GPIOB, GPIO_PIN_4, GPIO_MODE_OUT_OD_LOW_SLOW);//GPIO_MODE_OUT_PP_LOW_FAST);    //MCU_DO 
+    204           
+    205            GPIO_Init(GPIOC, GPIO_PIN_7, GPIO_MODE_OUT_OD_HIZ_FAST);    //LED2
+    206            GPIO_Init(GPIOC, GPIO_PIN_6, GPIO_MODE_OUT_OD_HIZ_FAST);    //LED1
+    207            PC_ODR_ODR5 = 1;
+    208            GPIO_Init(GPIOC, GPIO_PIN_5, GPIO_MODE_OUT_OD_HIZ_FAST);    //LED3
+    209            GPIO_Init(GPIOC, GPIO_PIN_4, GPIO_MODE_IN_FL_NO_IT);        //B3_AD
+    210            GPIO_Init(GPIOC, GPIO_PIN_3, GPIO_MODE_OUT_PP_LOW_FAST);    //MCU_CO 
+    211             
+    212            GPIO_Init(GPIOD, GPIO_PIN_6, GPIO_MODE_IN_FL_NO_IT);         //NTC_AD
+    213            GPIO_Init(GPIOD, GPIO_PIN_5, GPIO_MODE_IN_FL_NO_IT);         //Dis_Cur_AD
+    214            GPIO_Init(GPIOD, GPIO_PIN_4, GPIO_MODE_OUT_PP_LOW_FAST);     //CON
+    215            GPIO_Init(GPIOD, GPIO_PIN_3, GPIO_MODE_IN_FL_NO_IT);         //B1_AD
+    216            GPIO_Init(GPIOD, GPIO_PIN_2, GPIO_MODE_IN_FL_NO_IT);         //B2_AD   
+    217          #if 1
+    218            CPU_CFG_GCR |=0x01;       //SWIN模式被禁用，SWIM引脚可被用作普通I/O口
+    219            GPIO_Init(GPIOD, GPIO_PIN_1, GPIO_MODE_OUT_PP_LOW_FAST);   //Pre_Dis
+    220          #else
+    221            GPIO_Init(GPIOD, GPIO_PIN_1, GPIO_MODE_IN_PU_NO_IT);        //SWIN/MUC_DO3
+    222          #endif
+    223            //EXTI_CR1 |=0x40;//上升沿触发//0x80;//下降沿触发
+    224          /*
+    225          	GPIO_MODE_IN_FL_NO_IT 无中断功能的浮动输入。  //ADC input
+    226          	
+    227          	GPIO_MODE_IN_PU_NO_IT 无中断功能的上拉输入。  //normal digit input
+    228          	
+    229          	GPIO_MODE_IN_FL_IT 带中断功能的浮动输入。  
+    230          	
+    231          	GPIO_MODE_IN_PU_IT 带中断功能的上拉输入。	
+    232          	
+    233          	GPIO_MODE_OUT_OD_LOW_FAST 高速开漏低电平输出，可工作到10MHz。  
+    234          	
+    235          	GPIO_MODE_OUT_PP_LOW_FAST 高速推挽低电平输出，可工作到10MHz。  
+    236          	
+    237          	GPIO_MODE_OUT_OD_LOW_SLOW 低速开漏低电平输出，可工作到2MHz。	//undefined port
+    238          	
+    239          	GPIO_MODE_OUT_PP_LOW_SLOW 低速推挽低电平输出，可工作到2MHz。	
+    240          	
+    241          	GPIO_MODE_OUT_OD_HIZ_FAST 高速开漏高阻态输出，可工作到10MHz。  
+    242          	
+    243          	GPIO_MODE_OUT_PP_HIGH_FAST 高速推挽高电平输出，可工作到10MHz。  
+    244          	
+    245          	GPIO_MODE_OUT_OD_HIZ_SLOW 低速开漏高阻态输出，可工作到2MHz。	
+    246          	
+    247          	GPIO_MODE_OUT_PP_HIGH_SLOW 低速推挽高电平输出，可工作到2MHz。
+    248          */
+    249          }
+    250          //==================================================================
+    251          //==================================================================
+    252          void VarInit(void)
+    253          { 
+    254          }
+    255          //==================================================================
+    256          //==================================================================
+    257          void Delay400us(void)
+    258          {
+    259              unsigned char t=71;//75;//40;//38; 
+    260              while(t--)
+    261              {
+    262                  nop(); nop(); nop(); nop(); nop(); nop(); nop(); nop();
+    263              }
+    264          } 
+    265          //=======================================================================
+    266          //======================================================================= 
+    267          //======================================================================= 
+    268          void Timer2Init(void)
+    269          { 
+    270              CLK_PCKENR1 |= 0x20;    // Fmaster 与外设TIM2连接
+    271              TIM2_CR1 = 0x85;        // TIM2_ARR寄存器通过缓冲预装载，使能计数器
+    272              TIM2_IER = 0x00;        // 禁止中断
+    273              TIM2_EGR = 0x01;        // 允许产生更新事件 
+    274              TIM2_PSCR = 0x07;       // 计数器时钟=主时钟/8=16MHZ/128    8us// 相当于计数器周期为 
+    275              TIM2_CNTRH = 0;         //     
+    276              TIM2_CNTRL = 0;         //     
+    277              TIM2_ARRH = 0x04;       //     10ms
+    278              TIM2_ARRL = 0xE2;       //   
+    279              TIM2_IER = 0x01;        // 使能更新中断
+    280              TIM2_IER |= 0x01;       // 使能更新中断，禁止触发中断  
+    281          } 
+    282          //=======================================================================
+    283          //==================================================================
+    284          //==================================================================
+    285          //--Fmaster = CK_PSC =16MHz, CK_PSC prescaler(128) to CK_CNT(8us)   TIM4_SR1.UIF更新中断标志符
+    286          void Timer4Init(void)
+    287          {
+    288              CLK_PCKENR1 |= 0x10;    //Fmaster 与外设TIM4连接
+    289              TIM4_IER = 0x00;        // 禁止中断
+    290              TIM4_EGR = 0x01;        // 允许产生更新事件 
+    291              TIM4_PSCR = 0x07;       // 计数器时钟=主时钟/128=16MHZ/128  // 相当于计数器周期为8uS
+    292              TIM4_CR1 = 0x15;        // TIM4_ARR寄存器通过缓冲预装载，使能计数器
+    293              TIM4_CNTR = 0;          //     
+    294              TIM4_ARR = 6;//12;//25;           // 6*8us = 200us 
+    295              //TIM4_ARR = 125;       // 125*8us = 1ms 
+    296              TIM4_IER |= 0x01;       //更新中断使能，禁止触发中断
+    297              //TIM4_OFF();
+    298              TIM4_CR1 &= ~0x01;
+    299          } 
+    300          void Timer2Init_backup(void)
+    301          {
+    302              CLK_PCKENR1 |= 0xA0; 
+    303              TIM2_CR1 =0;              // 关闭TIM2
+    304              TIM2_IER = 0; 
+    305              TIM2_PSCR = 0x07;         // 16MHz/128 = 8us
+    306              TIM2_ARRH = 0x04;
+    307              TIM2_ARRL = 0xE2;         // 10ms/8us = 1250
+    308              TIM2_CR1 |= 0x80;         // 自动重装载预装载允许位, 允许更新中断
+    309              TIM2_EGR |= 0x01;         // 更新TIM2，使PSC有效
+    310               /* 
+    311              TIM2_EGR |= 0x20;         // 重新初始化TIM1  
+    312              TIM2_CCR1H =0;           
+    313              TIM2_CCR1L =0; 
+    314              TIM2_CCMR1 =0X68;         //配置TIM2_CH1为PWM1模式输出 
+    315              TIM2_CCER1 =0x01;         //Enable TIM2_CH1 channel 
+    316              */
+    317              TIM2_IER = 0x01;          // 使能更新中断
+    318              TIM2_CR1 |= 0x01;         // 使能TIM2 
+    319          } 
+    320          //====================================================================
+    321          //====================================================================
+    322          void TempCheck(void)
+    323          { 
+    324              static uint8_t ChgTemp_cnt =0;
+    325              static uint8_t DisTemp_cnt =0; 
+    326              Temp_Val = ADConverse(6); 
+    327              if(WorkMode == CHARGE_MODE)  
+    328              {
+    329                 DisTemp_cnt =0;
+    330                 if((Temp_Val > ChgTempL_ON_SET) || (Temp_Val < ChgTempH_ON_SET) || (ChgTemp_cnt >= 10))
+    331                 {
+    332                   if((ChgTemp_cnt ++) >= 10)
+    333                   {
+    334                     ChgTemp_cnt = 10;
+    335                     Bits_flag.ChgTemp = 1;
+    336                   }
+    337                 }
+    338                 else
+    339                 {
+    340                   ChgTemp_cnt = 0;
+    341                 }
+    342                //==========================充电温度保护恢复
+    343                if(Bits_flag.ChgTemp && (Temp_Val < ChgTempL_OFF_SET) && (Temp_Val > ChgTempH_OFF_SET))
+    344                {
+    345                  ChgTemp_cnt = 0;
+    346                  Bits_flag.ChgTemp = 0;
+    347                } 
+    348              }
+    349              else //if(WorkMode == DISCHARGE_MODE)
+    350              {
+    351                 ChgTemp_cnt = 0;
+    352                 if((Temp_Val > DisTempL_ON_SET) || (Temp_Val < DisTempH_ON_SET) || (DisTemp_cnt >= 10))
+    353                 {
+    354                   if((DisTemp_cnt ++) >= 10)
+    355                   {
+    356                     DisTemp_cnt = 10;
+    357                     Bits_flag.DisTemp = 1;
+    358                   }
+    359                 }
+    360                 else
+    361                 {
+    362                   DisTemp_cnt =0;
+    363                 }
+    364                //==========================充电温度保护恢复 
+    365                //if(Bits_flag.DisTemp && (Temp_Val < DisTempL_OFF_SET) && (Temp_Val > DisTempH_OFF_SET))
+    366                if(Bits_flag.DisTemp && (Temp_Val < DisTempL_OFF_SET) && (Temp_Val > DisTempH_OFF_SET))
+    367                {
+    368                    DisTemp_cnt = 0;
+    369                    Bits_flag.DisTemp = 0;
+    370                }  
+    371              }   
+    372          }
+    373          //================================================================== 
+    374          //==================================================================
+    375          void CurrentCheck(void)
+    376          { 
+    377            static uint16_t IS_CHG_OC_cnt =0;
+    378            static uint16_t DisCur_Val_Cur = 0;
+    379            uint16_t DisCur_Val_Tmp = 0;
+    380            uint16_t DisCur_Val_Sum =0;
+    381            uint8_t i =0;
+    382            if(WorkMode == CHARGE_MODE)
+    383            {
+    384              if(IS_CHG_OC_ON())
+    385              {
+    386                if((IS_CHG_OC_cnt ++) >= 5)
+    387                {
+    388                  IS_CHG_OC_cnt = 5;
+    389                  Bits_flag.ChgCurOv = 1;
+    390                }
+    391              }
+    392              else
+    393              {
+    394                IS_CHG_OC_cnt = 0;
+    395              }
+    396                
+    397              //if(Bits_flag.ChgCurOv && ChgCurOv_Re_t >= ChgCurOv_Re_t_SET && IS_CHG_OC_OFF())
+    398              if(Bits_flag.ChgCurOv && ChgCurOv_Re_t >= 500 && IS_CHG_OC_OFF())
+    399              {
+    400                IS_CHG_OC_cnt = 0;
+    401                ChgCurOv_Re_t = 0;
+    402                Bits_flag.ChgCurOv = 0;
+    403              }
+    404            }
+    405            else if(WorkMode == DISCHARGE_MODE)//0.5A ==0.227V 
+    406            {
+    407              DisCur_Val_Cur = ADConverse(5);     //电池包电压检测  if(Current_float_Tmp_Last_Len <32)
+    408              //if(DisCur_Val_Cur > DisCur_Bias_Val)
+    409              if(DisCur_Val_Cur > 35)
+    410              {
+    411                //DisCur_Val_Cur -= DisCur_Bias_Val;
+    412                DisCur_Val_Cur -= 35;
+    413              }
+    414              else
+    415              {
+    416                DisCur_Val_Cur = 0;
+    417              }
+    418              DisCur_Val_Tmp = DisCur_Val_Cur;
+    419              DisCur_Val = (uint16_t)((uint32_t)465 * DisCur_Val_Tmp/10 );
+    420              //DisCur_Val_Tmp = (DisCur_Val *21 *5 *1024 )/5
+    421               /* 
+    422              //==============================对放电电流进行平均滑动滤波 begin
+    423              if(DisCur_Val_Tmp_Last_Len < 8)
+    424              {
+    425                DisCur_Val_Tmp_Last[DisCur_Val_Tmp_Last_Len] = DisCur_Val_Cur;//DisCur_Val;
+    426                for(i =0;i < DisCur_Val_Tmp_Last_Len; i++)
+    427                {
+    428                  DisCur_Val_Sum += DisCur_Val_Tmp_Last[i];
+    429                }
+    430                DisCur_Val =  DisCur_Val_Sum / DisCur_Val_Tmp_Last_Len ;
+    431                DisCur_Val_Tmp_Last_Len += 1;
+    432              }
+    433              else
+    434              {
+    435                for(i =0;i < DisCur_Val_Tmp_Last_Len-1;i++)
+    436                {
+    437                  DisCur_Val_Tmp_Last[i] =DisCur_Val_Tmp_Last[i+1];
+    438                }
+    439                DisCur_Val_Tmp_Last[i] = DisCur_Val_Cur;
+    440                for(i =0;i < DisCur_Val_Tmp_Last_Len;i++)
+    441                {
+    442                  DisCur_Val_Sum += DisCur_Val_Tmp_Last[i];
+    443                }
+    444                DisCur_Val = DisCur_Val_Sum >> 3;
+    445              }
+    446              //==============================对放电电流进行平均滑动滤波 end
+    447              */
+    448              //if(DisCur_Val_Tmp > 1500 || DisCurOv_II_t >= DisCurOv_II_t_SET || DisCurOv_I_t >= DisCurOv_I_t_SET)
+    449              if(DisCur_Val > DisCur_Val_II_SET || DisCurOv_II_t >= DisCurOv_II_t_SET || DisCurOv_I_t >= DisCurOv_I_t_SET)
+    450              { 
+    451                if(DisCurOv_II_t >= DisCurOv_II_t_SET)
+    452                {
+    453                  DisCurOv_II_t = DisCurOv_II_t_SET;
+    454                  Bits_flag.DisCurOv = 1; 
+    455                }
+    456              }
+    457              else if(DisCur_Val > DisCur_Val_I_SET)//
+    458              { 
+    459                DisCurOv_II_t = 0;
+    460                if(DisCurOv_I_t >= DisCurOv_I_t_SET)
+    461                {
+    462                  DisCurOv_I_t = DisCurOv_I_t_SET;
+    463                  Bits_flag.DisCurOv = 1; 
+    464                }
+    465              }
+    466              else
+    467              {
+    468                DisCurOv_I_t  = 0;
+    469                DisCurOv_II_t = 0; 
+    470              }
+    471              if(Bits_flag.DisCurOv && DisCurOv_Re_t >= 500)
+    472              {
+    473                DisCurOv_I_t  = 0;
+    474                DisCurOv_II_t = 0;
+    475                Bits_flag.DisCurOv = 0;
+    476              }
+    477            }
+    478          }
+    479          //================================================================== 
+    480          void CellVolCalibrate(void)
+    481          {
+    482            uint8_t i = 0;
+    483            Cell_Ratio[0] = 6;
+    484            Cell_Ratio[1] = 2;
+    485            Cell_Ratio[2] = 1;
+    486            Vcc_Volt = 5000; 
+    487            for(i = 0;i<3;i++)
+    488            {
+    489              Cell_Volt[i] = (uint16_t)((uint32_t)Vcc_Volt *Cell_Ratio[i] * Cell_Volt_Ad[i]/1024);
+    490            }
+    491            //Cell_Volt[2] = Cell_Volt[2] - Cell_Volt[1];
+    492            //Cell_Volt[1] = Cell_Volt[1] - Cell_Volt[0]; 
+    493            Cell_Volt[0] = Cell_Volt[0] - Cell_Volt[1];
+    494            Cell_Volt[1] = Cell_Volt[1] - Cell_Volt[2]; 
+    495          }
+    496          //==================================================================
+    497          void BatVolCheck(void)
+    498          {
+    499            uint8_t i = 0;  
+    500            uint16_t tmpval_tol = 0; 
+    501            uint16_t tmpval_max = 0; 
+    502            uint16_t tmpval_min = 0x7FFF;  
+    503            for(i =0;i<3;i++)
+    504            {
+    505              Cell_Volt_Ad[i] = ADConverse(i+2);     //电池包电压检测 
+    506            }
+    507            CellVolCalibrate();
+    508            
+    509            for(i =0;i<3;i++)
+    510            {
+    511              tmpval_tol += Cell_Volt[i];
+    512              if(Cell_Volt_Ad[i] < tmpval_min)
+    513              {
+    514                tmpval_min = Cell_Volt[i];
+    515              }
+    516              if(Cell_Volt_Ad[i] > tmpval_max)
+    517              {
+    518                tmpval_max = Cell_Volt[i];
+    519              }
+    520            }
+    521            Cell_Volt_Tol = tmpval_tol;
+    522            Cell_Volt_Max = tmpval_max;
+    523            Cell_Volt_Min = tmpval_min;
+    524            Cell_Volt_Avg = Cell_Volt_Tol/3; 
+    525             
+    526            //=====================================
+    527            if(WorkMode == CHARGE_MODE)//(Bits_flag.Chg)
+    528            {
+    529              //if(Cell_Volt_Max > ChgOv_SET || ChgOv_t >= ChgOv_t_SET) 
+    530              if(Cell_Volt_Max > 4230 || ChgOv_t >= ChgOv_t_SET) 
+    531              {
+    532                if(ChgOv_t >= ChgOv_t_SET)
+    533                {
+    534                  ChgOv_t = ChgOv_t_SET;
+    535                  Bits_flag.ChgOv = 1;
+    536                }
+    537              }
+    538              else
+    539              { 
+    540                ChgOv_t = 0;
+    541              }
+    542              
+    543              //if(Bits_flag.ChgOv && (Cell_Volt_Avg < ChgOv_Re_SET) && (Cell_Volt_Max < ChgOv_Re_SET)) 
+    544              if(Bits_flag.ChgOv && (Cell_Volt_Avg < 4100) && (Cell_Volt_Max < 4100)) 
+    545              { 
+    546                ChgOv_t = 0;
+    547                Bits_flag.ChgOv = 0;
+    548              }
+    549            }
+    550            else if(WorkMode == DISCHARGE_MODE)
+    551            { 
+    552              //if(Cell_Volt_Min < DisOv_Min_SET || Cell_Volt_Avg < DisOv_Avg_SET || DisOv_t >= DisOv_t_SET)//866
+    553              if(Cell_Volt_Min < 2700 || Cell_Volt_Avg < 3000 || DisOv_t >= DisOv_t_SET)//866
+    554              {
+    555                if(DisOv_t >= DisOv_t_SET)
+    556                {
+    557                  DisOv_t = DisOv_t_SET;
+    558                  Bits_flag.DisOv = 1;
+    559                }
+    560              }
+    561              else
+    562              { 
+    563                DisOv_t = 0;
+    564              }
+    565              
+    566              //if(Bits_flag.DisOv && (Cell_Volt_Avg >= DisOv_Re_SET)) 
+    567              if(Bits_flag.DisOv && (Cell_Volt_Avg >= 3200))
+    568              { 
+    569                DisOv_t = 0;
+    570                Bits_flag.DisOv = 0;
+    571              }
+    572            }
+    573             
+    574          }
+    575          //================================================================== 
+    576          void ModeCheck(void)
+    577          {    
+    578            //static uint8_t workmode_exchange_cnt = 0;
+    579            
+    580             if(IS_CHGER_IN())
+    581             {
+    582               if(ChargeMode_Exchange_Delay >= 50)
+    583               {
+    584                  ChargeMode_Exchange_Delay = 100;
+    585                  DischargeMode_Exchange_Delay = 0;
+    586                  IdleMode_Exchange_Delay = 0;
+    587                  WorkMode = CHARGE_MODE;    
+    588               }
+    589             }
+    590             /*-------------------------------------------------------------------------------------------------------
+    591                无异常且检测到大电流放电时，为放电状态
+    592                无保护且小电流时，Pre_Dsg为on，可关闭MCU_DO，来检测BIG_LOAD_DET是否为低电平
+    593                有异常保护时，Pre_Dsg和MCU_DO均关闭，无法检测负载状态，可静等异常释放时，先打开Pre_Dsg，再检测负载状态
+    594             ---------------------------------------------------------------------------------------------------------*/
+    595             else if(DisCur_Val > 10 || (IS_MCU_DO_OFF() && IS_BIG_LOAD_DET() && IS_Pre_Dis_ON()) || (IS_MCU_DO_OFF() && IS_Pre_Dis_OFF()) )// ////  &&
+    596             //else if((IS_BIG_LOAD_DET()))// || DisCur_Val > 5) 
+    597             {
+    598               if(DischargeMode_Exchange_Delay >= 50)
+    599               {
+    600                  ChargeMode_Exchange_Delay = 0;
+    601                  DischargeMode_Exchange_Delay = 100;
+    602                  IdleMode_Exchange_Delay = 0;  
+    603                  WorkMode = DISCHARGE_MODE;    
+    604               }
+    605             }/**/
+    606             else
+    607             {
+    608               if(IdleMode_Exchange_Delay >= 50)
+    609               {
+    610                  ChargeMode_Exchange_Delay = 0;
+    611                  DischargeMode_Exchange_Delay = 0;
+    612                  IdleMode_Exchange_Delay = 100; 
+    613                  WorkMode = IDLE_MODE;  
+    614               }
+    615             } 
+    616          }  
+    617          void StatusClear(void)
+    618          { 
+    619            if(WorkMode == CHARGE_MODE)
+    620            {
+    621              //===========================
+    622              DisOv_t = 0; 
+    623              DisCurOv_II_t = 0; 
+    624              DisCurOv_I_t = 0; 
+    625              DisCurOv_Re_t = 0; 
+    626            }   
+    627            else if(WorkMode == DISCHARGE_MODE)
+    628            {
+    629              //===========================
+    630              ChgOv_t = 0; 
+    631              ChgCurOv_Re_t = 0; 
+    632            }  
+    633          }
+    634          
+    635          void VarClear(void)
+    636          {
+    637            uint8_t i = 0;
+    638            ChargeMode_Exchange_Delay = 0;
+    639            DischargeMode_Exchange_Delay = 0;
+    640            IdleMode_Exchange_Delay = 0;
+    641            for(i =0; i <18;i++)
+    642            {
+    643              Adc_value[i] = 0;
+    644              if(i <3)
+    645              {
+    646                Cell_Volt[i]    = 0; 
+    647                Cell_Ratio[i]   = 0; 
+    648                Cell_Volt_Ad[i] = 0; 
+    649              }
+    650              if(i <16 )
+    651              {
+    652                DisCur_Val_Tmp_Last[i] = 0;
+    653              }
+    654            }
+    655            Vcc_Volt = 0;
+    656            Cell_Volt_Tol = 0;
+    657            Cell_Volt_Max = 0;
+    658            Cell_Volt_Min = 0;
+    659            Cell_Volt_Avg = 0;
+    660            DisCur_Val = 0;
+    661            DisCur_Bias_Val = 0;
+    662            Temp_Val = 0;
+    663            DisOv_t = 0;
+    664            ChgOv_t = 0;
+    665            DisCurOv_I_t = 0;
+    666            DisCurOv_II_t = 0;
+    667            DisCurOv_Re_t = 0;
+    668            ChgCurOv_Re_t = 0;
+    669            DisCur_Val_Tmp_Last_Len = 0;
+    670            LedShow_Flash_t =0;
+    671            
+    672            Bits_flag.Chg = 0;
+    673            Bits_flag.ChgOv = 0;
+    674            Bits_flag.ChgTemp = 0;
+    675            Bits_flag.Dis = 0;
+    676            Bits_flag.DisOv = 0;
+    677            Bits_flag.DisTemp = 0;
+    678            Bits_flag.DisCurOv = 0;  
+    679            
+    680            WorkMode = IDLE_MODE;
+    681            
+    682            ChargeMode_Exchange_Delay = 100;
+    683            DischargeMode_Exchange_Delay = 100;
+    684            IdleMode_Exchange_Delay = 100; 
+    685          }
+    686          
+    687          //================================================================== 
+    688          void FET_ChgDis_Cntrl(void)
+    689          {   
+    690             if(WorkMode == CHARGE_MODE)
+    691             {
+    692               MCU_DO_OFF();
+    693               Pre_Dis_OFF();
+    694               if(Bits_flag.ChgCurOv || Bits_flag.ChgTemp || Bits_flag.ChgOv)
+    695               {
+    696                 MCU_CO_OFF();
+    697               }
+    698               else
+    699               {
+    700                 MCU_CO_ON();
+    701               }
+    702             }
+    703             else //if(WorkMode == DISCHARGE_MODE)
+    704             {
+    705               MCU_CO_OFF();
+    706               //==有异常保护时，Pre_Dsg和MCU_DO均关闭，无法检测负载状态， 异常释放时，先打开Pre_Dsg，再检测负载状态
+    707               if(0)//(Bits_flag.DisCurOv || Bits_flag.DisTemp || Bits_flag.DisOv)
+    708               {
+    709                 MCU_DO_OFF();
+    710                 Pre_Dis_OFF();
+    711               }
+    712               else
+    713               {
+    714                 Pre_Dis_ON();
+    715                 if(0)//(WorkMode == DISCHARGE_MODE)
+    716                 {
+    717                    MCU_DO_ON();
+    718                 }
+    719                 else
+    720                 {
+    721                    MCU_DO_OFF();
+    722                 }
+    723               }
+    724             } 
+    725          }  
+    726          
+    727          //================================================================== 
+    728          void FET_ChgDis_Cntrl_Backup(void)
+    729          {   
+    730             if(WorkMode == CHARGE_MODE)
+    731             {
+    732               MCU_DO_OFF();
+    733               Pre_Dis_OFF();
+    734               if(Bits_flag.ChgCurOv || Bits_flag.ChgTemp || Bits_flag.ChgOv)
+    735               {
+    736                 MCU_CO_OFF();
+    737               }
+    738               else
+    739               {
+    740                 MCU_CO_ON();
+    741               }
+    742             }
+    743             else if(WorkMode == DISCHARGE_MODE)
+    744             {
+    745               MCU_CO_OFF();
+    746               if(Bits_flag.DisCurOv || Bits_flag.DisTemp || Bits_flag.DisOv)
+    747               {
+    748                 MCU_DO_OFF();
+    749                 Pre_Dis_OFF();
+    750               }
+    751               else
+    752               {
+    753                 Pre_Dis_ON();
+    754                 if(1) 
+    755                 {
+    756                    MCU_DO_ON();
+    757                 }
+    758                 else
+    759                 {
+    760                    MCU_DO_OFF();
+    761                 }
+    762               }
+    763             }
+    764             else
+    765             {
+    766               MCU_CO_OFF();
+    767               MCU_DO_OFF();
+    768               Pre_Dis_OFF();
+    769             }
+    770               
+    771          }  
+    772          
+    773          
+    774          //======================
+    775          void WorkLedShow(void)
+    776          { 
+    777            if(WorkMode == CHARGE_MODE)//LED2 flashing
+    778            {
+    779              if(LedShow_Flash_t >= 10)
+    780              {
+    781                LedShow_Flash_t = 0;
+    782                LED1_XOR();
+    783                LED2_OFF();
+    784                LED_3OFF_4OFF();
+    785              }
+    786            }
+    787            else if(WorkMode == DISCHARGE_MODE)//LED1,LED2 flashing
+    788            { 
+    789              if(LedShow_Flash_t >= 10)
+    790              {
+    791                LedShow_Flash_t = 0;
+    792                LED1_OFF();
+    793                LED2_XOR();
+    794                LED_3OFF_4OFF();
+    795              } 
+    796            }
+    797            else if(WorkMode == IDLE_MODE)//LED1 flashing
+    798            {
+    799              LED1_OFF();
+    800              LED2_OFF(); 
+    801              if(LedShow_Flash_t < 10)
+    802              { 
+    803                LED_3ON_4OFF();
+    804              }
+    805              else if(LedShow_Flash_t < 20)
+    806              {
+    807                LED_3OFF_4ON();
+    808              }
+    809              else
+    810              {
+    811                LedShow_Flash_t = 0;
+    812              }
+    813              
+    814            } 
+    815          }
+    816          //=============================================
+    817          /*----------------------------------------------------------------
+    818            充电电量显示				
+    819            亮四个灯LED1,LED2,LED3，LED4(绿灯)	11.4±0.3														
+    820            亮三个灯LED1,LED2,LED3(绿灯)		10.1±0.3	11.4±0.3					
+    821            亮两个灯LED1,LED2(绿灯)		8.8±0.3	10.1±0.3					
+    822            亮一个灯LED1(绿灯)			8.1±0.3	8.8±0.3					
+    823            LED1闪烁				8.1±0.3	 
+    824          ------------------------------------------------------------------*/
+    825          void LedShow(void)
+    826          {
+    827            static uint8_t ledshow_cnt = 0;
+    828            if(Cell_Volt_Tol > 11400)//11.4
+    829            {
+    830              LED1_ON();
+    831              LED2_ON(); 
+    832              ledshow_cnt += 1;
+    833              if(ledshow_cnt < 3)
+    834              { 
+    835                LED_3ON_4OFF();
+    836              }
+    837              else if(ledshow_cnt < 5)
+    838              { 
+    839                LED_3OFF_4ON();
+    840              }
+    841              else
+    842              {
+    843                ledshow_cnt = 0;
+    844              }
+    845            }
+    846            else if(Cell_Volt_Tol > 10100)//10.1
+    847            { 
+    848              LED1_ON();
+    849              LED2_ON(); 
+    850              LED_3ON_4OFF(); 
+    851            }
+    852            else if(Cell_Volt_Tol > 8800)//8.8
+    853            {
+    854              LED1_ON();
+    855              LED2_ON(); 
+    856              LED_3OFF_4OFF(); 
+    857            }
+    858            else if(Cell_Volt_Tol > 8100)//8.1
+    859            {
+    860              LED1_ON();
+    861              LED2_OFF(); 
+    862              LED_3OFF_4OFF(); 
+    863            }
+    864            else
+    865            {
+    866              LED2_OFF(); 
+    867              LED_3OFF_4OFF(); 
+    868              if(LedShow_Flash_t >= 50)
+    869              {
+    870                LedShow_Flash_t = 0; 
+    871                LED1_XOR();  
+    872              }
+    873            }
+    874            
+    875          }
+
+   Section sizes:
+
+     Function/Label          Bytes
+     --------------          -----
+     _A_PA_IDR                  1
+     _A_PB_ODR                  1
+     _A_PB_IDR                  1
+     _A_PC_ODR                  1
+     _A_PD_ODR                  1
+     _A_PD_IDR                  1
+     _A_CLK_ICKR                1
+     _A_CLK_SWCR                1
+     _A_CLK_CKDIVR              1
+     CLK_PCKENR1                1
+     CLK_PCKENR2                1
+     IWDG_KR                    1
+     _A_IWDG_PR                 1
+     IWDG_RLR                   1
+     _A_TIM1_CR1                1
+     _A_TIM1_EGR                1
+     _A_TIM1_CCMR1              1
+     _A_TIM1_CCMR2              1
+     _A_TIM1_CCER1              1
+     TIM1_PSCRH                 1
+     TIM1_PSCRL                 1
+     TIM1_ARRH                  1
+     TIM1_ARRL                  1
+     TIM1_CCR1H                 1
+     TIM1_CCR1L                 1
+     TIM1_CCR2H                 1
+     TIM1_CCR2L                 1
+     _A_TIM1_BKR                1
+     _A_TIM2_CR1                1
+     _A_TIM2_IER                1
+     _A_TIM2_EGR                1
+     _A_TIM2_CCMR1              1
+     _A_TIM2_CCER1              1
+     TIM2_CNTRH                 1
+     TIM2_CNTRL                 1
+     _A_TIM2_PSCR               1
+     TIM2_ARRH                  1
+     TIM2_ARRL                  1
+     TIM2_CCR1H                 1
+     TIM2_CCR1L                 1
+     _A_TIM4_CR1                1
+     _A_TIM4_IER                1
+     _A_TIM4_EGR                1
+     TIM4_CNTR                  1
+     _A_TIM4_PSCR               1
+     TIM4_ARR                   1
+     _A_ADC_CSR                 1
+     _A_ADC_CR1                 1
+     _A_ADC_CR2                 1
+     _A_ADC_CR3                 1
+     ADC_DRH                    1
+     ADC_DRL                    1
+     ADC_TDRH                   1
+     ADC_TDRL                   1
+     _A_CPU_CFG_GCR             1
+     PWM2_Init                 61
+     PWM1_Init                 77
+     ADC                       72
+     ADConverse               117
+     SysInit                   26
+     ADC_Init                  40
+     ClrWdt                    21
+     PortInit                 186
+     VarInit                    1
+     Delay400us                20
+     Timer2Init                45
+     Timer4Init                37
+     Timer2Init_backup         45
+     TempCheck                167
+     ChgTemp_cnt                1
+     DisTemp_cnt                1
+     CurrentCheck             258
+     IS_CHG_OC_cnt              2
+     DisCur_Val_Cur             2
+     CellVolCalibrate         113
+     BatVolCheck              295
+     ModeCheck                117
+     StatusClear               36
+     VarClear                 117
+     FET_ChgDis_Cntrl          45
+     FET_ChgDis_Cntrl_Backup   81
+     WorkLedShow              171
+     LedShow                  215
+     ledshow_cnt                1
+
+ 
+     7 bytes in section .near.bss
+    55 bytes in section .near.noinit
+ 2 363 bytes in section .near_func.text
+ 
+ 2 363 bytes of CODE memory
+     7 bytes of DATA memory (+ 55 bytes shared)
+
+Errors: none
+Warnings: 2

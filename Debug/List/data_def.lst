@@ -1,0 +1,143 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM829/Mar/2016  19:10:36 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\ProjectPath\STMPath\AC100_a0\sys\src\data_def.c       #
+#    Command line =  D:\ProjectPath\STMPath\AC100_a0\sys\src\data_def.c -e    #
+#                    -Om --no_unroll --no_inline --no_tbaa --no_cross_call    #
+#                    --debug --code_model small --data_model medium -o        #
+#                    D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\               #
+#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
+#                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
+#                    D:\ProjectPath\STMPath\AC100_a0\Debug\List\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/\ -I                #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/src/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_a0/user/inc/\ -I            #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/\ -I               #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/src/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/addon/inc/\ -I           #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/inc/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/sys/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/\ -I                 #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/src/\ -I             #
+#                    D:\ProjectPath\STMPath\AC100_a0/lib/inc/\ --vregs 16     #
+#    List file    =  D:\ProjectPath\STMPath\AC100_a0\Debug\List\data_def.lst  #
+#    Object file  =  D:\ProjectPath\STMPath\AC100_a0\Debug\Obj\data_def.o     #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\ProjectPath\STMPath\AC100_a0\sys\src\data_def.c
+      1          //#include "stdio.h"
+      2          #include "macro_def.h" 
+      3          
+      4          
+      5            unsigned int ChargeMode_Exchange_Delay = 0;
+      6            unsigned int DischargeMode_Exchange_Delay = 0;
+      7            unsigned int IdleMode_Exchange_Delay = 0;
+      8            unsigned int Adc_value[18];
+      9            unsigned int Cell_Volt_Ad[3]; 
+     10            unsigned int Cell_Volt[3];  
+     11            unsigned int Cell_Ratio[3];  
+     12            unsigned int Vcc_Volt; 
+     13            unsigned int Cell_Volt_Tol;  
+     14            unsigned int Cell_Volt_Max;    
+     15            unsigned int Cell_Volt_Min;    
+     16            unsigned int Cell_Volt_Avg;  
+     17            unsigned int DisCur_Val;  
+     18            unsigned int DisCur_Bias_Val;  
+     19            unsigned int Temp_Val; 
+     20          
+     21            unsigned int DisOv_t;
+     22            unsigned int ChgOv_t;
+     23            unsigned int DisCurOv_I_t;
+     24            unsigned int DisCurOv_II_t; 
+     25            unsigned int DisCurOv_Re_t; 
+     26            unsigned int ChgCurOv_Re_t;
+     27            unsigned int DisCur_Val_Tmp_Last_Len ;
+     28            unsigned int DisCur_Val_Tmp_Last[16];
+     29            
+     30          
+     31          
+     32            unsigned int  LedShow_Flash_t =0;
+     33          
+     34          
+     35          
+     36          
+     37          
+     38          //--------------------------------------
+     39          union UCHAR_ULONG
+     40          {
+     41              unsigned char uchardata[4]; 
+     42              unsigned long longdata;
+     43          }SendComData,tt;
+     44          
+     45            union UINT_UCHAR
+     46          {
+     47              unsigned int uintdata;
+     48              unsigned char uchardata[2];
+     49          } RevcComData,ReadEEPData;
+     50          
+     51          //------------------------------------------------------------------
+     52          struct FLAG_BITS
+     53          {
+     54              unsigned char Chg             : 1;
+     55              unsigned char ChgOv           : 1; 
+     56              unsigned char ChgTemp         : 1; 
+     57              unsigned char Dis             : 1;
+     58              unsigned char DisOv           : 1;
+     59              unsigned char DisTemp         : 1;   
+     60              unsigned char DisCurOv        : 1;  
+     61          } Bits_flag;
+     62           
+     63          enum  em_workmode
+     64          {
+     65             IDLE_MODE 	    =0x00,
+     66             CHARGE_MODE 	    =0x01,
+     67             DISCHARGE_MODE   =0x02
+     68          }WorkMode;
+
+   Section sizes:
+
+     Function/Label               Bytes
+     --------------               -----
+     ChargeMode_Exchange_Delay       2
+     DischargeMode_Exchange_Delay    2
+     IdleMode_Exchange_Delay         2
+     Adc_value                      36
+     Cell_Volt_Ad                    6
+     Cell_Volt                       6
+     Cell_Ratio                      6
+     Vcc_Volt                        2
+     Cell_Volt_Tol                   2
+     Cell_Volt_Max                   2
+     Cell_Volt_Min                   2
+     Cell_Volt_Avg                   2
+     DisCur_Val                      2
+     DisCur_Bias_Val                 2
+     Temp_Val                        2
+     DisOv_t                         2
+     ChgOv_t                         2
+     DisCurOv_I_t                    2
+     DisCurOv_II_t                   2
+     DisCurOv_Re_t                   2
+     ChgCurOv_Re_t                   2
+     DisCur_Val_Tmp_Last_Len         2
+     DisCur_Val_Tmp_Last            32
+     LedShow_Flash_t                 2
+     SendComData                     4
+     tt                              4
+     RevcComData                     2
+     ReadEEPData                     2
+     Bits_flag                       1
+     WorkMode                        1
+
+ 
+ 138 bytes in section .near.bss
+ 
+ 138 bytes of DATA memory
+
+Errors: none
+Warnings: none

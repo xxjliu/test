@@ -1,0 +1,134 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM821/Feb/2016  16:12:44 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\ProjectPath\STMPath\ch79H\sys\src\bsp_printf.c        #
+#    Command line =  D:\ProjectPath\STMPath\ch79H\sys\src\bsp_printf.c -e     #
+#                    -Ohz --debug --code_model small --data_model medium -o   #
+#                    D:\ProjectPath\STMPath\ch79H\Debug\Obj\ --dlib_config    #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    D:\ProjectPath\STMPath\ch79H\Debug\List\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/user/\ -I                   #
+#                    D:\ProjectPath\STMPath\ch79H/user/src/\ -I               #
+#                    D:\ProjectPath\STMPath\ch79H/user/inc/\ -I               #
+#                    D:\ProjectPath\STMPath\ch79H/addon/\ -I                  #
+#                    D:\ProjectPath\STMPath\ch79H/addon/src/\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/addon/inc/\ -I              #
+#                    D:\ProjectPath\STMPath\ch79H/sys/\ -I                    #
+#                    D:\ProjectPath\STMPath\ch79H/sys/inc/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/sys/src/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/lib/\ -I                    #
+#                    D:\ProjectPath\STMPath\ch79H/lib/src/\ -I                #
+#                    D:\ProjectPath\STMPath\ch79H/lib/inc/\ --vregs 16        #
+#    List file    =  D:\ProjectPath\STMPath\ch79H\Debug\List\bsp_printf.lst   #
+#    Object file  =  D:\ProjectPath\STMPath\ch79H\Debug\Obj\bsp_printf.o      #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\ProjectPath\STMPath\ch79H\sys\src\bsp_printf.c
+      1          /*
+      2          *********************************************************************************************************
+      3          *
+      4          *	模块名称 : printf模块
+      5          *	文件名称 : bsp_printf.c
+      6          *	版    本 : V2.0
+      7          *	说    明 : 实现printf和scanf函数重定向到串口1，即支持printf信息到UART1
+      8          *				实现重定向，只需要添加2个函数:
+      9          *				int fputc(int ch, FILE *f);
+     10          *				int fgetc(FILE *f);
+     11          *
+     12          *				这个c模块无对应的h文件。
+     13          *				如果需要应用程序支持 printf 函数，只用将 bsp_printf.c 这个文件添加到工程即可。
+     14          *
+     15          *	修改记录 :
+     16          *		版本号  日期       作者    说明
+     17          *		v1.0    2012-10-12 armfly  ST固件库版本 V2.1.0
+     18          *
+     19          *	Copyright (C), 2012-2013, 安富莱电子 www.armfly.com
+     20          *
+     21          *********************************************************************************************************
+     22          */
+     23          
+     24          #include "stm8s.h"
+     25          #include <stdio.h>
+     26          
+     27          /*
+     28          	由于不同的编译器 putcha 和 getchar 形参和返回值略有不同。
+     29          	因此此处采用宏定义的方式区别。
+     30          
+     31          	_RAISONANCE_ 和 _COSMIC_ 这2个宏是由编译器自动添加的预编译宏
+     32          */
+     33          #ifdef _RAISONANCE_
+     34          	#define PUTCHAR_PROTOTYPE int putchar (char c)
+     35          	#define GETCHAR_PROTOTYPE int getchar (void)
+     36          #elif defined (_COSMIC_)
+     37          	#define PUTCHAR_PROTOTYPE char putchar (char c)
+     38          	#define GETCHAR_PROTOTYPE char getchar (void)
+     39          #else /* _IAR_ */
+     40          	#define PUTCHAR_PROTOTYPE int putchar (int c)
+     41          	#define GETCHAR_PROTOTYPE int getchar (void)
+     42          #endif /* _RAISONANCE_ */
+     43          
+     44          /*
+     45          *********************************************************************************************************
+     46          *	函 数 名: putchar
+     47          *	功能说明: 重定义 putchar 函数， 这样可以使用printf函数从串口1打印输出
+     48          *	形    参: 等待发送的字符
+     49          *	返 回 值: 返回已发送的字符
+     50          *********************************************************************************************************
+     51          */
+     52          PUTCHAR_PROTOTYPE
+     53          {
+     54          	/* 发送一个字符 c 到UART1 */
+     55          	UART1_SendData8(c);
+     56          
+     57          	/* 等待发送完毕 */
+     58          	while (UART1_GetFlagStatus(UART1_FLAG_TXE) == RESET);
+     59          
+     60          	return (c);
+     61          }
+     62          
+     63          /*
+     64          *********************************************************************************************************
+     65          *	函 数 名: getchar
+     66          *	功能说明: 重定义C库中的 getchar 函数,这样可以使用scanff函数从串口1输入数据
+     67          *	形    参: 无
+     68          *	返 回 值: 返回已读到的字符
+     69          *********************************************************************************************************
+     70          */
+     71          GETCHAR_PROTOTYPE
+     72          {
+     73          	#ifdef _COSMIC_
+     74          		char c = 0;
+     75          	#else
+     76          		int c = 0;
+     77          	#endif
+     78          
+     79          	/* 等待新数据到达  */
+     80          	while (UART1_GetFlagStatus(UART1_FLAG_RXNE) == RESET);
+     81          
+     82          	/* 读取数据寄存器 */
+     83          	c = UART1_ReceiveData8();
+     84          
+     85          	return (c);
+     86          }
+     87          
+     88          /***************************** 安富莱电子 www.armfly.com (END OF FILE) *********************************/
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     putchar          25
+     getchar          16
+
+ 
+ 41 bytes in section .near_func.text
+ 
+ 41 bytes of CODE memory
+
+Errors: none
+Warnings: none

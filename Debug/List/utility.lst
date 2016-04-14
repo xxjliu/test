@@ -1,0 +1,195 @@
+###############################################################################
+#                                                                             #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM811/Apr/2015  10:45:33 #
+# Copyright 2010-2012 IAR Systems AB.                                         #
+#                                                                             #
+#    Source file  =  D:\STMPath\26X9010(MPP 2IN1)\addon\src\utility.c         #
+#    Command line =  "D:\STMPath\26X9010(MPP 2IN1)\addon\src\utility.c" -e    #
+#                    -Ohz --debug --code_model small --data_model medium -o   #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\" --dlib_config  #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    "D:\STMPath\26X9010(MPP 2IN1)\Debug\List\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/\" -I                 #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/src/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/user/inc/\" -I             #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/\" -I                #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/src/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/addon/inc/\" -I            #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/inc/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/sys/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/\" -I                  #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/src/\" -I              #
+#                    "D:\STMPath\26X9010(MPP 2IN1)/lib/inc/\" --vregs 16      #
+#    List file    =  D:\STMPath\26X9010(MPP 2IN1)\Debug\List\utility.lst      #
+#    Object file  =  D:\STMPath\26X9010(MPP 2IN1)\Debug\Obj\utility.o         #
+#                                                                             #
+#                                                                             #
+###############################################################################
+
+D:\STMPath\26X9010(MPP 2IN1)\addon\src\utility.c
+      1          /*
+      2          *****************************************************************************
+      3          *				All rights reserved.
+      4          *
+      5          * Filename:			utility.c
+      6          * Description:		utility c file
+      7          *
+      8          * Change History:
+      9          *			Goldjun     -- 06/17'2012 - Ver0.1
+     10          *			            -- created
+     11          *
+     12          *
+     13          *
+     14          *
+     15          ******************************************************************************
+     16          */
+     17          //#include "syscfg.h"
+     18          #include "type.h"
+     19          //include public header files
+     20          
+     21          #define	UTILITY_GLOBALS
+     22          #include "utility.h"
+     23          
+     24          
+     25          // MCU Wait Ms.
+     26          extern VOID WaitMs(DWORD	ms			)	
+     27          {
+     28          	WORD 	i;
+     29                 FeedWatchDog();
+     30          	while (ms)
+     31          		{
+     32          		//FeedWatchDog();
+     33          		for(i = 0; i < 1600; ++i)							//for x51 80,for i51 800
+     34          			{
+     35          			nop();	
+     36          			}
+     37          		ms--;
+     38          	}		
+     39          }
+     40          
+     41          
+     42          // MCU Wait Us*N.
+     43          extern VOID
+     44          	WaitUs(											
+     45          		DWORD		us										//Wait us counter value
+     46          		)	
+     47          {
+     48          	WORD 	i;
+     49          	while (us)
+     50          		{
+     51          		for (i = 0; i <= 1; ++i)
+     52          			{
+     53          			;//nop();
+     54          			}
+     55          		us--;
+     56          	}	
+     57          }
+     58          
+     59          
+     60          // WatchDog Init
+     61          extern void WatchDogInit(void)					
+     62          {
+     63          
+     64          
+     65          //Enable the IWDG
+     66          	IWDG_Enable();
+     67          //Enable the access to the IWDG registers*/
+     68          	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
+     69          //Fixe IWDG Reset period */
+     70                  IWDG_SetPrescaler(IWDG_Prescaler_256);//IWDG_Prescaler_128);
+     71          	IWDG_SetReload(0xFF);
+     72          //Refresh IWDG */
+     73                  IWDG_ReloadCounter();
+     74          
+     75          }
+     76          
+     77          
+     78          
+     79          
+     80          // Feed WatchDog
+     81          extern void FeedWatchDog(void)					
+     82          {
+     83          
+     84            IWDG_ReloadCounter();
+     85          
+     86          }
+     87          
+     88          
+     89          // Make one random number
+     90          WORD
+     91          	GetRandomNum(
+     92          		WORD	seed,
+     93          		WORD 	base
+     94          		)
+     95          {
+     96          //	DWORD	retval;
+     97          	return(seed);
+     98          }
+     99          
+    100          
+    101          // First bit position No. from bit0 (bit0 No. = 1).
+    102          BYTE
+    103          	FstBit1NumGet(
+    104          		BYTE	temp
+    105          		)
+    106          {
+    107          	BYTE	i = 0;
+    108          
+    109          	while (temp)
+    110          	{
+    111          		i++;
+    112          		if (temp & 0x01)
+    113          		{
+    114          			break;
+    115          		}
+    116          		temp >>= 1;
+    117          	}
+    118          	return i;
+    119          }
+    120          
+    121          //hex to bcd(for 1 byte)
+    122          extern BYTE
+    123          	Hex2Bcd(
+    124          		BYTE	temp
+    125          		)
+    126          {
+    127          	BYTE	retdat =0;
+    128          	retdat = (( (temp/10) << 4 )&0xf0) +( (temp%10)&0x0f);
+    129          	return(retdat);
+    130          }
+    131          
+    132          // bcd to hex
+    133          extern BYTE
+    134          	Bcd2Hex(
+    135          		BYTE	temp
+    136          		)
+    137          {
+    138          	BYTE	retdat =0;
+    139          	retdat = (temp&0x0f) + ( (temp&0xf0) >> 4 ) * 10;
+    140          	return(retdat);
+    141          }
+    142          
+
+   Section sizes:
+
+     Function/Label Bytes
+     -------------- -----
+     WaitMs           33
+     WaitUs           14
+     WatchDogInit     21
+     FeedWatchDog      3
+     GetRandomNum      1
+     FstBit1NumGet    29
+     Hex2Bcd          21
+     ?Subroutine0      9
+     Bcd2Hex          23
+
+ 
+ 154 bytes in section .near_func.text
+ 
+ 154 bytes of CODE memory
+
+Errors: none
+Warnings: none
