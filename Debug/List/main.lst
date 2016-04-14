@@ -1,35 +1,35 @@
 ###############################################################################
 #                                                                             #
-# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  15:30:05 #
+# IAR C/C++ Compiler V1.31.1.20058 [Evaluation] for STM814/Apr/2016  17:00:33 #
 # Copyright 2010-2012 IAR Systems AB.                                         #
 #                                                                             #
-#    Source file  =  D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c           #
-#    Command line =  D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c -e -Om    #
+#    Source file  =  D:\ProjectPath\STMPath\kkk\sys\src\main.c                #
+#    Command line =  D:\ProjectPath\STMPath\kkk\sys\src\main.c -e -Om         #
 #                    --no_unroll --no_inline --no_tbaa --no_cross_call        #
 #                    --debug --code_model small --data_model medium -o        #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\               #
-#                    --dlib_config "C:\Program Files\IAR Systems\Embedded     #
-#                    Workbench 6.0 Evaluation\stm8\LIB\dlstm8smn.h" -lcN      #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\List\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_A0/user/\ -I                #
-#                    D:\ProjectPath\STMPath\AC100_A0/user/src/\ -I            #
-#                    D:\ProjectPath\STMPath\AC100_A0/user/inc/\ -I            #
-#                    D:\ProjectPath\STMPath\AC100_A0/addon/\ -I               #
-#                    D:\ProjectPath\STMPath\AC100_A0/addon/src/\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_A0/addon/inc/\ -I           #
-#                    D:\ProjectPath\STMPath\AC100_A0/sys/\ -I                 #
-#                    D:\ProjectPath\STMPath\AC100_A0/sys/inc/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_A0/sys/src/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_A0/lib/\ -I                 #
-#                    D:\ProjectPath\STMPath\AC100_A0/lib/src/\ -I             #
-#                    D:\ProjectPath\STMPath\AC100_A0/lib/inc/\ --vregs 16     #
-#    List file    =  D:\ProjectPath\STMPath\AC100_A0\Debug\List\main.lst      #
-#    Object file  =  D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\main.o         #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\ --dlib_config      #
+#                    "C:\Program Files\IAR Systems\Embedded Workbench 6.0     #
+#                    Evaluation\stm8\LIB\dlstm8smn.h" -lcN                    #
+#                    D:\ProjectPath\STMPath\kkk\Debug\List\ -I                #
+#                    D:\ProjectPath\STMPath\kkk/user/\ -I                     #
+#                    D:\ProjectPath\STMPath\kkk/user/src/\ -I                 #
+#                    D:\ProjectPath\STMPath\kkk/user/inc/\ -I                 #
+#                    D:\ProjectPath\STMPath\kkk/addon/\ -I                    #
+#                    D:\ProjectPath\STMPath\kkk/addon/src/\ -I                #
+#                    D:\ProjectPath\STMPath\kkk/addon/inc/\ -I                #
+#                    D:\ProjectPath\STMPath\kkk/sys/\ -I                      #
+#                    D:\ProjectPath\STMPath\kkk/sys/inc/\ -I                  #
+#                    D:\ProjectPath\STMPath\kkk/sys/src/\ -I                  #
+#                    D:\ProjectPath\STMPath\kkk/lib/\ -I                      #
+#                    D:\ProjectPath\STMPath\kkk/lib/src/\ -I                  #
+#                    D:\ProjectPath\STMPath\kkk/lib/inc/\ --vregs 16          #
+#    List file    =  D:\ProjectPath\STMPath\kkk\Debug\List\main.lst           #
+#    Object file  =  D:\ProjectPath\STMPath\kkk\Debug\Obj\main.o              #
 #                                                                             #
 #                                                                             #
 ###############################################################################
 
-D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c
+D:\ProjectPath\STMPath\kkk\sys\src\main.c
       1          
       2          #include "stm8s.h"  
       3          #include "user.h"  
@@ -63,7 +63,7 @@ D:\ProjectPath\STMPath\AC100_A0\sys\src\main.c
      31            {
      32              FLASH_ProgramByte( i, 0x55);
      33            }
-     34            Write_word( 4,0x76543210);//
+     34            Write_word( 4,0x76543210); 
      35            FLASH_Lock(FLASH_MEMTYPE_DATA);
      36            while(1)
      37            {

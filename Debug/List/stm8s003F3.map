@@ -1,28 +1,26 @@
 ###############################################################################
 #                                                                             #
-# IAR ELF Linker V1.31.1.50058 for STM8                 14/Apr/2016  15:30:05 #
+# IAR ELF Linker V1.31.1.50058 for STM8                 14/Apr/2016  17:00:33 #
 # Copyright 2010-2012 IAR Systems AB.                                         #
 #                                                                             #
-#    Output file  =  D:\ProjectPath\STMPath\AC100_A0\Debug\Exe\stm8s003F3.out #
-#    Map file     =  D:\ProjectPath\STMPath\AC100_A0\Debug\List\stm8s003F3.ma #
-#                    p                                                        #
-#    Command line =  D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\data_def.o     #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\main.o         #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_awu.o    #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_clk.o    #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_exti.o   #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_flash.o  #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_gpio.o   #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_it.o     #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_tim2.o   #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_tim4.o   #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\stm8s_uart1.o  #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\Obj\user.o         #
-#                    --redirect _Printf=_PrintfSmall --redirect               #
-#                    _Scanf=_ScanfSmall -o D:\ProjectPath\STMPath\AC100_A0\De #
-#                    bug\Exe\stm8s003F3.out --map                             #
-#                    D:\ProjectPath\STMPath\AC100_A0\Debug\List\stm8s003F3.ma #
-#                    p --config "C:\Program Files\IAR Systems\Embedded        #
+#    Output file  =  D:\ProjectPath\STMPath\kkk\Debug\Exe\stm8s003F3.out      #
+#    Map file     =  D:\ProjectPath\STMPath\kkk\Debug\List\stm8s003F3.map     #
+#    Command line =  D:\ProjectPath\STMPath\kkk\Debug\Obj\data_def.o          #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\main.o              #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_awu.o         #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_clk.o         #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_exti.o        #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_flash.o       #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_gpio.o        #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_it.o          #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_tim2.o        #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_tim4.o        #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\stm8s_uart1.o       #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Obj\user.o --redirect   #
+#                    _Printf=_PrintfSmall --redirect _Scanf=_ScanfSmall -o    #
+#                    D:\ProjectPath\STMPath\kkk\Debug\Exe\stm8s003F3.out      #
+#                    --map D:\ProjectPath\STMPath\kkk\Debug\List\stm8s003F3.m #
+#                    ap --config "C:\Program Files\IAR Systems\Embedded       #
 #                    Workbench 6.0 Evaluation\stm8\config\lnkstm8s003f3.icf"  #
 #                    --config_def _CSTACK_SIZE=0x100 --config_def             #
 #                    _HEAP_SIZE=0x100 --entry __iar_program_start --debug_lib #
@@ -198,7 +196,7 @@ Zero (__iar_zero_init2)
 
     Module                 ro code  ro data  rw data
     ------                 -------  -------  -------
-D:\ProjectPath\STMPath\AC100_A0\Debug\Obj: [1]
+D:\ProjectPath\STMPath\kkk\Debug\Obj: [1]
     data_def.o                                   126
     main.o                     199
     stm8s_flash.o               37
@@ -426,7 +424,7 @@ exit                     0x008617   0x3  Code  Gb  exit.o [4]
 main                     0x008080  0xc7  Code  Gb  main.o [1]
 
 
-[1] = D:\ProjectPath\STMPath\AC100_A0\Debug\Obj
+[1] = D:\ProjectPath\STMPath\kkk\Debug\Obj
 [2] = command line
 [3] = dbgstm8smd.a
 [4] = dlstm8smn.a

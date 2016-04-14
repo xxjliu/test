@@ -31,7 +31,7 @@ int main( void )
   {
     FLASH_ProgramByte( i, 0x55);
   }
-  Write_word( 4,0x76543210);//
+  Write_word( 4,0x76543210); 
   FLASH_Lock(FLASH_MEMTYPE_DATA);
   while(1)
   {

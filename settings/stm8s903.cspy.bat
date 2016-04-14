@@ -10,6 +10,6 @@
 @REM 
 
 
-"C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\common\bin\cspybat" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8proc.dll" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8stlink.dll"  %1 --plugin "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8bat.dll" --backend -B "-p" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\config\ddf\iostm8s003f3.ddf" "-d" "stlink" "--mcuname" "STM8S003F3" "--verify_download" "--log_file" "D:\ProjectPath\STMPath\AC100_A0\cspycomm.log" 
+"C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\common\bin\cspybat" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8proc.dll" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8stlink.dll"  %1 --plugin "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\bin\stm8bat.dll" --backend -B "-p" "C:\Program Files\IAR Systems\Embedded Workbench 6.0 Evaluation\stm8\config\ddf\iostm8s003f3.ddf" "-d" "stlink" "--mcuname" "STM8S003F3" "--verify_download" "--log_file" "D:\ProjectPath\STMPath\kkk\cspycomm.log" 
 
 
